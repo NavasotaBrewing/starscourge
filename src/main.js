@@ -11,6 +11,9 @@ import 'wave-ui/dist/wave-ui.css';
 // custom css
 import "./assets/main.css";
 
+// font awesome
+import 'font-awesome/css/font-awesome.min.css'
+
 console.log(WaveUI);
 
 const app = createApp(App);
@@ -18,7 +21,7 @@ const app = createApp(App);
 // Options go here, if necessary
 new WaveUI(app, {
     colors: {
-        primary: "#BF7746",
+        // primary: "#BF7746",
     }
 });
 

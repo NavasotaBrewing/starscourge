@@ -1,10 +1,50 @@
 <template>
   <w-app>
-    <div id="nav">
-      <router-link to="/">Home</router-link> | 
-      <router-link to="/about">About</router-link>
-    </div>
 
-    <router-view />
+    <w-card class="grow" content-class="pa0">
+      <w-toolbar vertical absolute left>
+
+        <w-tooltip right align-top>
+          <template #activator="{ on }">
+          <a v-on="on" href="https://navasotabrewing.com" class="href" target="_blank">
+            <w-image :src="'https://cdn1.iconfinder.com/data/icons/agriculture-13/48/7-512.png'" :width="45"
+              :height="45">
+            </w-image>
+          </a>
+          </template>
+          Navasota Brewing Company
+        </w-tooltip>
+
+
+        <w-divider class="my6"></w-divider>
+
+        <ToolbarItem linkto="/" icon="fa fa-sitemap">Home</ToolbarItem>
+        <ToolbarItem linkto="/configure" icon="fa fa-cubes">Configure</ToolbarItem>
+
+      </w-toolbar>
+      
+      <w-content id="main-content">
+        <router-view />
+      </w-content>
+    </w-card>
+
+
+
   </w-app>
 </template>
+
+<style scoped>
+#main-content {
+  /* Adds margin to clear the toolbar */
+  margin-left: 80px;
+}
+</style>
+
+<script>
+import ToolbarItem from '@/components/ToolbarItem.vue';
+
+export default {
+    name: "AppComponent",
+    components: { ToolbarItem }
+}
+</script>
