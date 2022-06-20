@@ -1,0 +1,9 @@
+@font-face {
+    font-family: "Open Sans";
+    src: url("./fonts/OpenSans-VariableFont.ttf");
+}
+
+:root {
+    font-family: "Open Sans";
+    font-size: 16px;
+}
