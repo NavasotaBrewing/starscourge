@@ -1,7 +1,7 @@
 <template>
   <w-app>
 
-    <w-card class="grow" content-class="pa0">
+    <w-card id="main-content" class="grow" content-class="pa0">
       <w-toolbar vertical absolute left>
 
         <w-tooltip right align-top>
@@ -19,11 +19,10 @@
         <w-divider class="my6"></w-divider>
 
         <ToolbarItem linkto="/" icon="fa fa-sitemap">Home</ToolbarItem>
-        <ToolbarItem linkto="/configure" icon="fa fa-cubes">Configure</ToolbarItem>
-
+        <ToolbarItem linkto="/model" icon="fa fa-cubes">Models</ToolbarItem>
       </w-toolbar>
       
-      <w-content id="main-content">
+      <w-content>
         <router-view />
       </w-content>
     </w-card>
@@ -36,7 +35,8 @@
 <style scoped>
 #main-content {
   /* Adds margin to clear the toolbar */
-  margin-left: 80px;
+  padding-left: 80px;
+  padding-top: 20px;
 }
 </style>
 
