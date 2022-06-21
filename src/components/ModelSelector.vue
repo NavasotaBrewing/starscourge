@@ -1,7 +1,7 @@
 <template>
     <w-card title="Select A Model" title-class="blue-light5--bg">
-        <p class="mb2">Activate a model to use or edit it.</p>
-        <w-table :headers="table.headers" :items="table.items" :selectable-rows="table.selectableRows"
+        <p class="mb4">Activate a model to use, or create a new one below.</p>
+        <w-table class="mb4" :headers="table.headers" :items="table.items" :selectable-rows="table.selectableRows"
             :force-selection="table.forceSelection" @row-select="selectionInfo = $event">
         </w-table>
         <div class="mt2">
