@@ -6,7 +6,8 @@
         </w-table>
         <div class="mt2">
             <w-button @click="activateModel()" class="mr2" lg>Activate</w-button>
-            <w-button @click="deactivateModel()" class="mr2" lg bg-color="secondary">Deactivate</w-button>
+            <w-button v-if="modelActive()" @click="deactivateModel()" class="mr2" lg bg-color="secondary">Deactivate</w-button>
+            <!-- <w-button v-else @click="newModel()" class="mr2" lg bg-color="success">New</w-button> -->
             <w-button class="mr2" bg-color="error" lg>Delete</w-button>
         </div>
     </w-card>
@@ -40,9 +41,13 @@ export default {
         },
         deactivateModel() {
             this.$root.deactivateModel();
+        },
+        modelActive() {
+            return this.$root.activeModel.name != undefined;
         }
     },
     mounted() {
+        window.ms = this;
         this.$root.models.forEach(mdl => {
             this.table.items.push({
                 name: mdl.name,
