@@ -22,9 +22,10 @@
         <ToolbarItem linkto="/model" icon="fa fa-cubes">Models</ToolbarItem>
       </w-toolbar>
       
-      <w-content>
+      <!-- <w-content> -->
+        <pre>{{ activeModel.name }}</pre>
         <router-view />
-      </w-content>
+      <!-- </w-content> -->
     </w-card>
 
 
@@ -42,9 +43,28 @@
 
 <script>
 import ToolbarItem from '@/components/ToolbarItem.vue';
+// import axios from "axios";
+import dummy_model from "@/dummy_model.js";
 
 export default {
     name: "AppComponent",
-    components: { ToolbarItem }
+    components: { ToolbarItem },
+    data() {
+      return {
+        activeModel: {},
+        models: [dummy_model]
+      }
+    },
+    methods: {
+      activateModel(model) {
+        this.activeModel = model;
+      },
+      deactivateModel() {
+        this.activeModel = {};
+      }
+    },
+    mounted() {
+      window.root = this;
+    }
 }
 </script>
