@@ -18,6 +18,12 @@
             </w-card>
         </div>
     </w-flex>
+
+    <w-flex v-if="$root.modelActive()" class="mb12">
+        <div class="xs4 ma2">
+            <NewDevice></NewDevice>
+        </div>
+    </w-flex>
 </template>
 
 
@@ -25,10 +31,11 @@
 import ModelSelector from "@/components/ModelSelector.vue";
 import NewRTU from "@/components/NewRTU.vue";
 import RTUTable from "@/components/RTUTable.vue";
+import NewDevice from "@/components/NewDevice.vue";
 
 export default {
     name: "ModelComponent",
-    components: { ModelSelector, NewRTU, RTUTable }
+    components: { ModelSelector, NewRTU, RTUTable, NewDevice }
 }
 
 
