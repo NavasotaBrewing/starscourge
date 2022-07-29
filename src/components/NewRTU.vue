@@ -1,5 +1,5 @@
 <template>
-    <w-card title="Add an RTU" title-class="blue-light5--bg">
+    <w-card title="Add an RTU" title-class="blue-light3--bg">
         <w-flex class="mb6">
             <div class="xs6 mr1">
                 <w-input>Name</w-input>
