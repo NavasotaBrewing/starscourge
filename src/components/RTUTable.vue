@@ -33,7 +33,6 @@ export default {
         }
     },
     mounted() {
-        window.table = this;
         this.refresh();
     },
     methods: {

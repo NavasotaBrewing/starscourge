@@ -17,7 +17,7 @@ export default {
                 {
                     "driver": "Waveshare",
                     "name": "Relay 0",
-                    "id": "ID string here again",
+                    "id": "2",
                     "state": "Off",
                     "addr": 0,
                     "controller_addr": 1,
@@ -27,7 +27,7 @@ export default {
                 {
                     "driver": "Waveshare",
                     "name": "Relay 1",
-                    "id": "ID string here again",
+                    "id": "4",
                     "state": "Off",
                     "addr": 1,
                     "controller_addr": 1,
