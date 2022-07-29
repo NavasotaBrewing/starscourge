@@ -48,6 +48,8 @@ export default {
     },
     mounted() {
         window.ms = this;
+
+        // Initialize the table of models from the roots list of models
         this.$root.models.forEach(mdl => {
             this.table.items.push({
                 name: mdl.name,

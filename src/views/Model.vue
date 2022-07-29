@@ -49,30 +49,7 @@
 
     <w-flex class="mb12">
         <div class="xs4 ma2">
-            <w-card title="Add an RTU" title-class="blue-light5--bg">
-                
-                <w-flex class="mb6">
-                    <div class="xs6 mr1">
-                        <w-input>Name</w-input>
-                    </div>
-                    <div class="xs6">
-                        <w-input>Location</w-input>
-                    </div>
-                </w-flex>
-
-                <w-flex class="mb6 md">
-                    <div class="xs6">
-                        <w-input>ID</w-input>
-                    </div>
-                    <div class="xs6">
-                        <w-input>IPv4 Address</w-input>
-                    </div>
-                </w-flex>
-
-                <w-flex class="justify-end">
-                    <w-button class="mr2" lg bg-color="success">Add</w-button>
-                </w-flex>
-            </w-card>
+            <NewRTU></NewRTU>
         </div>
     </w-flex>
 </template>
@@ -80,10 +57,11 @@
 
 <script>
 import ModelSelector from "@/components/ModelSelector.vue";
+import NewRTU from "@/components/NewRTU.vue";
 
 export default {
     name: "ModelComponent",
-    components: { ModelSelector }
+    components: { ModelSelector, NewRTU }
 }
 
 
