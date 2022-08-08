@@ -43,7 +43,7 @@
 
             <w-flex class="mb6">
                 <div class="xs12 mr1">
-                    <w-input :validators="[validators.required]" v-model="masterAddr">Master Address *</w-input>
+                    <w-input :validators="[validators.required]" v-model="model.masterAddr">Master Address *</w-input>
                 </div>
             </w-flex>
 
@@ -103,6 +103,10 @@ export default {
                     this.$root.$waveui.notify("Model created!", "success", 6000);
                     console.info("Model returned from DB:");
                     console.info(createdModel);
+
+                    this.model = {};
+                    this.$emit('newModel');
+                    this.dialog.show = false;
                 }).catch((err) => {
                     this.$root.$waveui.notify("Something went wrong. Check database connection.", "error", 6000);
                     console.error(err);

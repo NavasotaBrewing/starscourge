@@ -43,7 +43,6 @@
 <script>
 import ToolbarItem from '@/components/ToolbarItem.vue';
 // import axios from "axios";
-import dummy_model from "@/dummy_model.js";
 import db from "@/db.js";
 
 export default {
@@ -52,7 +51,6 @@ export default {
     data() {
         return {
             activeModel: {},
-            models: [dummy_model]
         }
     },
     methods: {

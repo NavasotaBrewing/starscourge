@@ -15,16 +15,22 @@
     </w-card>
 
     <!-- This is the dialog for adding a new model -->
-    <NewModel ref="NewModelDialog" />
+    <NewModel @newModel="refresh" ref="NewModelDialog" />
 
 </template>
 
 <script>
+
+
 import NewModel from './NewModel.vue';
+import db from "@/db.js";
+
 export default {
     name: "ModelSelector",
+    components: { NewModel },
     data() {
         return {
+            models: [],
             table: {
                 headers: [
                     { label: "Model Name", key: "name" },
@@ -32,7 +38,7 @@ export default {
                     { label: "RTU Count", key: "rtuCount" }
                 ],
                 items: [
-                // { name: "Testing Model", date: 'Feb 1, 2022', rtuCount: 6 },
+                    // { name: "Testing Model", date: 'Feb 1, 2022', rtuCount: 6 },
                 ],
                 selectableRows: 1,
                 forceSelection: true
@@ -42,7 +48,7 @@ export default {
     },
     methods: {
         activateModel() {
-            let model = this.$root.models.filter((mdl) => mdl.name == this.selectionInfo.item.name)[0];
+            let model = this.models.filter((mdl) => mdl.name == this.selectionInfo.item.name)[0];
             this.$root.activateModel(model);
         },
         deactivateModel() {
@@ -53,22 +59,30 @@ export default {
             // Can be removed with precision
             return this.$root.modelActive();
         },
-        showNewModelDialog() {
-
+        refresh() {
+            db.getModels()
+                .then((models) => {
+                    this.models = models;
+                    console.info(models.length + " models retrieved");
+                    this.table.items = [];
+                    this.models.forEach(mdl => {
+                        this.table.items.push({
+                            name: mdl.name,
+                            date: mdl.date,
+                            rtuCount: mdl.RTUs.length
+                        });
+                    });
+                }).catch((err) => {
+                    console.error("Models couldn't be retrieved from the database");
+                    console.error(err);
+                });
         }
     },
     mounted() {
         window.ms = this;
-        // Initialize the table of models from the roots list of models
-        this.$root.models.forEach(mdl => {
-            this.table.items.push({
-                name: mdl.name,
-                date: mdl.date,
-                rtuCount: mdl.RTUs.length
-            });
-        });
+        this.refresh();
     },
-    components: { NewModel }
+
 }
 
 </script>

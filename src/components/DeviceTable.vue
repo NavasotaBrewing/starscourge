@@ -9,6 +9,9 @@
                 <td class="pa1">{{ item.driver }}</td>
                 <td class="pa1">{{ item.controller_addr }}</td>
                 <td class="pa1">{{ item.device_addr }}</td>
+                <td class="ma1">
+                    <w-button @click="removeDevice(item.id)" class="ma1" bg-color="error" sm>Remove</w-button>
+                </td>
             </tr>
         </template>
     </w-table>
@@ -28,7 +31,8 @@ export default {
                     { label: "RTU", key: "rtu" },
                     { label: "Driver", key: "driver" },
                     { label: "Controller Addr", key: "controller_addr" },
-                    { label: "Device Addr", key: "device_addr" }
+                    { label: "Device Addr", key: "device_addr" },
+                    { label: "Options", key: "options" }
                 ],
                 items: []
             }
@@ -39,6 +43,9 @@ export default {
         this.refresh();
     },
     methods: {
+        removeDevice(id) {
+            console.log("Remove device " + id);
+        },
         refresh() {
             this.$root.activeModel.RTUs.forEach(rtu => {
                 rtu.devices.forEach(dev => {
