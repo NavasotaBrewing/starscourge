@@ -20,6 +20,9 @@ const app = createApp(App);
 new WaveUI(app, {
     colors: {
         // primary: "#BF7746",
+    },
+    notificationManager: {
+        transition: 'twist'
     }
 });
 

@@ -23,7 +23,6 @@
             </w-toolbar>
 
             <!-- <w-content> -->
-            <pre>{{ activeModel.name }}</pre>
             <router-view />
             <!-- </w-content> -->
         </w-card>
@@ -45,6 +44,7 @@
 import ToolbarItem from '@/components/ToolbarItem.vue';
 // import axios from "axios";
 import dummy_model from "@/dummy_model.js";
+import db from "@/db.js";
 
 export default {
     name: "AppComponent",
@@ -57,6 +57,8 @@ export default {
     },
     methods: {
         activateModel(model) {
+            console.info("Model Activated");
+            console.info(model);
             this.activeModel = model;
         },
         deactivateModel() {
@@ -68,6 +70,7 @@ export default {
     },
     mounted() {
         window.root = this;
+        window.db = db;
     }
 }
 </script>

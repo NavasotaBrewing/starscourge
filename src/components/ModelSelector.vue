@@ -49,7 +49,9 @@ export default {
             this.$root.deactivateModel();
         },
         modelActive() {
-            return this.$root.activeModel.name != undefined;
+            // This is for backwards compat
+            // Can be removed with precision
+            return this.$root.modelActive();
         },
         showNewModelDialog() {
 
