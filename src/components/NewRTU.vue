@@ -43,9 +43,6 @@ export default {
             }
         }
     },
-    mounted() {
-        window.newrtu = this;
-    },
     methods: {
         add() {
             if (!this.formValid) {
@@ -59,7 +56,10 @@ export default {
             this.$emit('newRTU');
             this.newRTU = {};
             this.formValid = null;
-            document.getElementById("newRTUForm").reset();
+            // This is a really stupid hack and I hate this
+            setTimeout(() => {
+                document.getElementById("newRTUForm").reset();
+            }, 1);
         }
     }
 }
