@@ -1,6 +1,6 @@
 <template>
     <w-card title="Add an RTU" title-class="blue-light3--bg">
-        <w-form v-model="formValid">
+        <w-form id="newRTUForm" v-model="formValid">
             <w-flex class="mb6">
                 <div class="xs6 mr1">
                     <w-input v-model="newRTU.name" :validators="[validators.required]">Name*</w-input>
@@ -43,6 +43,9 @@ export default {
             }
         }
     },
+    mounted() {
+        window.newrtu = this;
+    },
     methods: {
         add() {
             if (!this.formValid) {
@@ -54,6 +57,9 @@ export default {
             // We emit so that the device table (separate component)
             // knows to update to show it
             this.$emit('newRTU');
+            this.newRTU = {};
+            this.formValid = null;
+            document.getElementById("newRTUForm").reset();
         }
     }
 }
