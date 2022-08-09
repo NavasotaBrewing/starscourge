@@ -43,6 +43,10 @@ export default {
     methods: {
         removeRTU(id) {
             console.log("Remove RTU " + id);
+            this.$root.activeModel.RTUs = this.$root.activeModel.RTUs.filter((rtu) => {
+                return rtu.id != id;
+            });
+            this.refresh();
         },
         refresh() {
             this.table.items = [];
