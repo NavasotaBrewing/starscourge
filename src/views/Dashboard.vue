@@ -1,10 +1,15 @@
 <template>
-    <w-flex wrap>
-        <div class="xs2"></div>
-        <div class="xs12 lg6 pa1">
-            <div class="title1 mb6">All RTUs ({{ RTUs().length }})</div>
+    <w-flex wrap v-for="rtu in RTUs()" :key="rtu.id">
+        <div class="pa2 xl4 lg6 md12">
+            <RTUDisplay :rtu="rtu" />
+        </div>
 
-            <RTUDisplay v-for="rtu in RTUs()" :key="rtu.id" :rtu="rtu" />
+        <div class="pa2 xl8 lg6 md12">
+            <w-flex wrap>
+                <div class="pa2 xl4 lg6 md12" v-for="dev in rtu.devices" :key="dev.id">
+                    <DeviceCard :rtu="rtu" :device="dev" />
+                </div>
+            </w-flex>
         </div>
 
     </w-flex>
@@ -12,10 +17,11 @@
 
 <script>
 import RTUDisplay from "@/components/RTUDisplay.vue";
+import DeviceCard from "../components/DeviceCard.vue";
 
 export default {
     name: "DashboardComponent",
-    components: { RTUDisplay },
+    components: { RTUDisplay, DeviceCard },
     data() {
         return {}
     },
@@ -23,7 +29,7 @@ export default {
         RTUs() {
             return this.$root.RTUs;
         },
-        
+
     }
 }
 

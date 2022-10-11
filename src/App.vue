@@ -23,7 +23,7 @@
 
 
             <router-view />
-            <!-- <pre>{{ RTUs }}</pre> -->
+            <pre>{{ RTUs }}</pre>
 
         </w-card>
 
@@ -53,7 +53,26 @@ export default {
         }
     },
     methods: {
+        allRTUs() {
+            return this.RTUs;
+        },
 
+        allDevices() {
+            let devices = [];
+            this.RTUs.forEach(rtu => {
+                devices.push(rtu.devices);
+            });
+            return devices.flat();
+        },
+
+        findDevice(id) {
+            return this.allDevices().find((dev) => dev.id == id);
+        },
+
+        mapDevice(id, func) {
+            let device = this.findDevice(id);
+            func(device);
+        }
     },
     async mounted() {
         window.root = this;

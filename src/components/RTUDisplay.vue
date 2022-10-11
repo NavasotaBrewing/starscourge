@@ -1,14 +1,13 @@
 <template>
-    <w-card :title="rtu.name">
-        <div class="grow">
-            <div class="title3 mb1">Details</div>
-            <hr class="mb2" />
-            <pre><w-list :items="RTUAttributesAsList(rtu)" icon="fa fa-cog"></w-list></pre>
+    <w-card class="grow" :title="rtu.name">
+        <div class="title3 mb1">Details</div>
+        <hr class="mb2" />
+        <pre><w-list :items="RTUAttributesAsList(rtu)" icon="fa fa-cog"></w-list></pre>
 
-            <div class="title3 mb1 mt3">Devices ({{ rtu.devices.length }})</div>
-            <hr class="mb2" />
-            <w-table class="mb3" :headers="deviceTableHeaders()" :items="deviceTableItems(rtu.devices)" />
-        </div>
+        <div class="title3 mb1 mt3">Devices ({{ rtu.devices.length }})</div>
+        <hr class="mb2" />
+        <w-table class="mb3" :headers="deviceTableHeaders()" :items="deviceTableItems(rtu.devices)" />
+
 
         <template #actions>
             <div class="spacer"></div>
@@ -29,6 +28,7 @@ export default {
         makeLabel(labelName, value) {
             return { label: labelName + ": `" + value + "`" };
         },
+
         RTUAttributesAsList(rtu) {
             let list = [];
             list.push(this.makeLabel("ID", rtu.id));
@@ -39,11 +39,11 @@ export default {
         // Gives the headers for the device table in each RTU
         deviceTableHeaders() {
             return [
-                { label: "Name", key: "name" },
                 { label: "ID", key: "id" },
+                { label: "Name", key: "name" },
                 { label: "Driver", key: "driver" },
-                { label: "Address", key: "addr" },
-                { label: "Controller Address", key: "controller_addr" },
+                { label: "Controller Addr", key: "controller_addr" },
+                { label: "Addr", key: "addr" },
             ];
         },
 
