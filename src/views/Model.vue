@@ -14,13 +14,9 @@
 
                         <div class="title3 mb1 mt3">Devices</div>
                         <hr class="mb2" />
-                        <div v-for="dev in rtu.devices" :key="dev.id" class="grow">
-                            <div class="title5 mb">{{ dev.name }}</div>
-                            <pre><w-list :items="deviceAttibutesAsList(dev)" icon="fa fa-cog"></w-list></pre>
-                            <pre></pre>
-                        </div>
+                        <w-table class="mb3" v-for="dev in rtu.devices" :key="dev.id" :headers="deviceTableHeaders()" :items="deviceTableItems(dev)" />
                     </div>
-    
+
                     <template #actions>
                         <div class="spacer"></div>
                         <w-button bg-color="success">Test Connection</w-button>
@@ -55,14 +51,29 @@ export default {
             list.push(this.makeLabel("Devices Found", rtu.devices.length));
             return list;
         },
-        deviceAttibutesAsList(device) {
-            let list = [];
-            list.push(this.makeLabel("ID", device.id));
-            list.push(this.makeLabel("Driver", device.driver));
-            list.push(this.makeLabel("Address", device.addr));
-            list.push(this.makeLabel("Controller Address", device.controller_addr));
-            return list;
+        deviceTableHeaders() {
+            return [
+                { label: "Attribute",   key: "attr"  },
+                { label: "Value",       key: "value" }
+            ];
+        },
+        deviceTableItems(device) {
+            return [
+                { attr: "Name", value: device.name },
+                { attr: "ID", value: device.id },
+                { attr: "Driver", value: device.driver },
+                { attr: "Address", value: device.addr },
+                { attr: "Controller Address", value: device.controller_addr },
+            ];
         }
+        // deviceAttibutesAsList(device) {
+        //     let list = [];
+        //     list.push(this.makeLabel("ID", device.id));
+        //     list.push(this.makeLabel("Driver", device.driver));
+        //     list.push(this.makeLabel("Address", device.addr));
+        //     list.push(this.makeLabel("Controller Address", device.controller_addr));
+        //     return list;
+        // }
     }
 }
 
