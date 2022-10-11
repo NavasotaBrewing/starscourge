@@ -1,6 +1,8 @@
 <template>
 
-    <div></div>
+    <div>
+
+    </div>
 
 </template>
 
@@ -9,16 +11,11 @@
 </style>
 
 <script>
-// import ModelSelector from "@/components/ModelSelector.vue";
-// import NewRTU from "@/components/NewRTU.vue";
-// import RTUTable from "@/components/RTUTable.vue";
-// import NewDevice from "@/components/NewDevice.vue";
-// import DeviceTable from "@/components/DeviceTable.vue";
 // import db from "@/db.js";
 
 export default {
     name: "ModelComponent",
-    components: {  },
+    components: { },
     methods: {
         saveModel() {
 

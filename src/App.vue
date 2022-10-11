@@ -24,7 +24,6 @@
 
             <!-- <w-content> -->
             <router-view />
-            <pre>{{ RTUs }}</pre>
             <!-- </w-content> -->
         </w-card>
 
