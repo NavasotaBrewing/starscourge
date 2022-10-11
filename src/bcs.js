@@ -16,7 +16,7 @@ export default {
         ).data;
     },
 
-    testConnection(IPv4Addr) {
+    async testConnection(IPv4Addr) {
         return axios.get(this.buildFullAddr(IPv4Addr, "/running"))
             .then((resp) => {
                 return resp.data.running;

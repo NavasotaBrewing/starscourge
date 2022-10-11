@@ -1,7 +1,7 @@
 <template>
-    <w-card tile>
+    <w-card>
         <template #title>
-            <w-toolbar>
+            <w-toolbar class="blue-light5--bg">
                 <div class="title3">{{ device.name }}</div>
                 <div class="spacer"></div>
                 <span class="title5">

@@ -1,5 +1,5 @@
 <template>
-    <w-card class="grow" :title="rtu.name">
+    <w-card class="grow" title-class="blue-light5--bg title1" :title="rtu.name">
         <div class="title3 mb1">Details</div>
         <hr class="mb2" />
         <pre><w-list :items="RTUAttributesAsList(rtu)" icon="fa fa-cog"></w-list></pre>
@@ -7,7 +7,6 @@
         <div class="title3 mb1 mt3">Devices ({{ rtu.devices.length }})</div>
         <hr class="mb2" />
         <w-table class="mb3" :headers="deviceTableHeaders()" :items="deviceTableItems(rtu.devices)" />
-
 
         <template #actions>
             <div class="spacer"></div>
