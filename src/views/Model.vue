@@ -18,7 +18,7 @@
 
                     <template #actions>
                         <div class="spacer"></div>
-                        <w-button bg-color="success">Test Connection</w-button>
+                        <w-button @click="testConnection(rtu)" bg-color="success">Test Connection</w-button>
                     </template>
                 </w-card>
         </div>
@@ -32,6 +32,8 @@
 
 <script>
 // import db from "@/db.js";
+
+import bcs from '@/bcs';
 
 export default {
     name: "ModelComponent",
@@ -74,6 +76,15 @@ export default {
                 });
             });
             return items;
+        },
+
+        async testConnection(rtu) {
+            let resp = await bcs.testConnection(rtu.ip_addr);
+            if (resp) {
+                this.$waveui.notify(rtu.name + " is connected!", "success");
+            } else {
+                this.$waveui.notify(rtu.name + " didn't respond", "danger");
+            }
         }
     }
 }

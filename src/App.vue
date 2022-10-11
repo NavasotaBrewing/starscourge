@@ -24,13 +24,13 @@
 
             <!-- <w-content> -->
             <router-view />
-            <pre>{{ RTUs }}</pre>
+            <!-- <pre>{{ RTUs }}</pre> -->
             <!-- </w-content> -->
         </w-card>
 
 
 
-    </w-app>data
+    </w-app>
 </template>
 
 <style scoped>
@@ -60,9 +60,10 @@ export default {
     },
     async mounted() {
         window.root = this;
+        window.bcs = bcs;
         
         bcs.RTU_addresses.forEach(async (addr) => {
-            this.RTUs.push(await bcs.find_rtu_at(addr));
+            this.RTUs.push(await bcs.findRTUAt(addr));
         })
     }
 }
