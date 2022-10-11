@@ -1,17 +1,15 @@
 import { createWebHistory, createRouter } from "vue-router";
-import Home from "@/views/Home.vue";
-import Model from "@/views/Model.vue";
+import Dashboard from "@/views/Dashboard.vue";
 
 const routes = [
     {
         path: "/",
-        name: "Home",
-        component: Home
+        name: "Dashboard",
+        component: Dashboard
     },
     {
-        path: "/model",
-        name: "Model",
-        component: Model
+        path: "/dashboard",
+        redirect: "/"
     }
 ];
 

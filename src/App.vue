@@ -18,14 +18,13 @@
 
                 <w-divider class="my6"></w-divider>
 
-                <ToolbarItem linkto="/" icon="fa fa-sitemap">Home</ToolbarItem>
-                <ToolbarItem linkto="/model" icon="fa fa-cubes">RTUs</ToolbarItem>
+                <ToolbarItem linkto="/" icon="fa fa-sitemap">Dashboard</ToolbarItem>
             </w-toolbar>
 
-            <!-- <w-content> -->
+
             <router-view />
             <!-- <pre>{{ RTUs }}</pre> -->
-            <!-- </w-content> -->
+
         </w-card>
 
 
@@ -43,8 +42,6 @@
 
 <script>
 import ToolbarItem from '@/components/ToolbarItem.vue';
-// import axios from "axios";
-// import db from "@/db.js";
 import bcs from "@/bcs.js";
 
 export default {
