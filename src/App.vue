@@ -23,7 +23,7 @@
 
 
             <router-view />
-            <pre>{{ RTUs }}</pre>
+            <!-- <pre>{{ RTUs }}</pre> -->
 
         </w-card>
 
