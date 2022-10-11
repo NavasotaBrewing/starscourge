@@ -13,11 +13,20 @@
         </div>
 
     </w-flex>
+    <div v-if="RTUs().length == 0">
+        <w-flex  class="justify-center">
+            <div class="title1">No RTUs found</div>
+        </w-flex>
+        <w-flex class="justify-center">
+            <pre>Locations tested: {{ addresses() }}</pre>
+        </w-flex>
+    </div>
 </template>
 
 <script>
 import RTUDisplay from "@/components/RTUDisplay.vue";
 import DeviceCard from "../components/DeviceCard.vue";
+import bcs from "@/bcs.js";
 
 export default {
     name: "DashboardComponent",
@@ -29,6 +38,10 @@ export default {
         RTUs() {
             return this.$root.RTUs;
         },
+
+        addresses() {
+            return bcs.RTU_addresses;
+        }
 
     }
 }
