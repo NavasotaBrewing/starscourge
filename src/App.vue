@@ -19,17 +19,18 @@
                 <w-divider class="my6"></w-divider>
 
                 <ToolbarItem linkto="/" icon="fa fa-sitemap">Home</ToolbarItem>
-                <ToolbarItem linkto="/model" icon="fa fa-cubes">Models</ToolbarItem>
+                <ToolbarItem linkto="/model" icon="fa fa-cubes">RTUs</ToolbarItem>
             </w-toolbar>
 
             <!-- <w-content> -->
             <router-view />
+            <pre>{{ RTUs }}</pre>
             <!-- </w-content> -->
         </w-card>
 
 
 
-    </w-app>
+    </w-app>data
 </template>
 
 <style scoped>
@@ -43,32 +44,26 @@
 <script>
 import ToolbarItem from '@/components/ToolbarItem.vue';
 // import axios from "axios";
-import db from "@/db.js";
+// import db from "@/db.js";
+import bcs from "@/bcs.js";
 
 export default {
     name: "AppComponent",
     components: { ToolbarItem },
     data() {
         return {
-            activeModel: {},
+            RTUs: []
         }
     },
     methods: {
-        activateModel(model) {
-            console.info("Model Activated");
-            console.info(model);
-            this.activeModel = model;
-        },
-        deactivateModel() {
-            this.activeModel = {};
-        },
-        modelActive() {
-            return this.activeModel.id != undefined;
-        }
+
     },
-    mounted() {
+    async mounted() {
         window.root = this;
-        window.db = db;
+        
+        bcs.RTU_addresses.forEach(async (addr) => {
+            this.RTUs.push(await bcs.find_rtu_at(addr));
+        })
     }
 }
 </script>
