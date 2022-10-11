@@ -11,17 +11,20 @@
         </template>
 
         <RelayCardContent v-if="device.driver == 'Waveshare' || device.driver == 'STR1'" :device="device" />
+        <!-- Currently this is called Omega but I plan to rename it to CN7500 -->
+        <ThermometerCardContent v-if="device.driver == 'Omega' || device.driver == 'CN7500'" :thermometer="device" />
     </w-card>
 
 </template>
 
 
 <script>
-import RelayCardContent from "@/components/RelayCardContent.vue";
+import RelayCardContent from "@/components/cardContent/Relay.vue";
+import ThermometerCardContent from "@/components/cardContent/Themometer.vue";
 
 export default {
     name: "DeviceCard",
-    components: { RelayCardContent },
+    components: { RelayCardContent, ThermometerCardContent },
     props: ["device", "rtu"]
 }
 
