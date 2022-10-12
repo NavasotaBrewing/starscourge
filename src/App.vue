@@ -23,7 +23,7 @@
 
 
             <router-view />
-            <!-- <pre>{{ RTUs }}</pre> -->
+            <pre>{{ RTUs }}</pre>
 
         </w-card>
 
@@ -43,6 +43,7 @@
 <script>
 import ToolbarItem from '@/components/ToolbarItem.vue';
 import bcs from "@/bcs.js";
+import enactors from "@/enactors.js";
 
 export default {
     name: "AppComponent",
@@ -80,7 +81,11 @@ export default {
         
         bcs.RTU_addresses.forEach(async (addr) => {
             this.RTUs.push(await bcs.findRTUAt(addr));
-        })
+        });
+
+        setTimeout(() => {
+            enactors.registerEnactorsWith(() => console.log('one was clicked') );
+        }, 50);
     }
 }
 </script>

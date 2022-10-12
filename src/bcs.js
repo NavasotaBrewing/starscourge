@@ -24,18 +24,27 @@ export default {
             .catch(() => {
                 return false;
             });
-    }
+    },
 
-    // update(model, mode = "Read") {
-    //     // model.mode = mode;
-    //     // let url = "http://" + model.masterAddr + "/model";
-    //     // axios.post(url, model)
-    //     //         .then(function (response) {
-    //     //             console.log(response);
-    //     //         })
-    //     //         .catch(function (error) {
-    //     //             console.log(error);
-    //     //         });
-    //     // model.mode = "Read";
-    // }
+    update(rtu, mode) {
+        // console.log(rtu);
+        let url = this.buildFullAddr(
+            rtu.ip_addr,
+            mode == "Write" ? "/enact" : "/update"
+        );
+
+        axios.post(url, rtu, {
+            headers: {
+                "Access-Control-Allow-Origin": "*"
+            }
+        })
+            .then((resp) => {
+                console.log("success")
+                console.log(resp);
+            })
+            .catch((resp) => {
+                console.log(resp);
+            })
+
+    }
 }

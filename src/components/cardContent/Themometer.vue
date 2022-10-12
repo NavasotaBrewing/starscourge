@@ -50,6 +50,10 @@ export default {
             this.$root.mapDevice(this.thermometer.id, (thermo) => {
                 thermo.sv = this.newSv;
             });
+            this.newSv = null;
+            setTimeout(() => {
+                this.valid = null;
+            }, 10);
         }
     }
 }
