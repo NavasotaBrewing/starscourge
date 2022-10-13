@@ -2,12 +2,18 @@
 // When clicked, the model will be sent in write mode to the BCS
 
 export default {
+    enactors: document.getElementsByClassName("enactor"),
     registerEnactorsWith(callback) {
-        let enactors = document.getElementsByClassName("enactor");
-        for (const en of enactors) {
+        for (const en of this.enactors) {
             en.addEventListener('click', () => {
                 callback(en);
             });
+        }
+    },
+
+    setClickableState(newState) {
+        for (const en of this.enactors) {
+            en.disabled = !newState;
         }
     }
 }

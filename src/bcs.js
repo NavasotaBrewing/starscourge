@@ -11,9 +11,7 @@ export default {
     },
 
     async findRTUAt(IPv4Addr) {
-        return (
-            await axios.get(this.buildFullAddr(IPv4Addr, "/generate"))
-        ).data;
+        return axios.get(this.buildFullAddr(IPv4Addr, "/generate"))
     },
 
     async testConnection(IPv4Addr) {
@@ -26,7 +24,7 @@ export default {
             });
     },
 
-    update(rtu, mode) {
+    async update(rtu, mode, callback) {
         // console.log(rtu);
         let url = this.buildFullAddr(
             rtu.ip_addr,
@@ -35,16 +33,15 @@ export default {
 
         axios.post(url, rtu, {
             headers: {
+                "content-type": "application/json",
                 "Access-Control-Allow-Origin": "*"
             }
         })
-            .then((resp) => {
-                console.log("success")
-                console.log(resp);
-            })
+            .then(callback)
             .catch((resp) => {
                 console.log(resp);
-            })
-
+            });
+        
+        return;
     }
 }

@@ -23,7 +23,7 @@
 
 
             <router-view />
-            <pre>{{ RTUs }}</pre>
+            <!-- <pre>{{ RTUs }}</pre> -->
 
         </w-card>
 
@@ -48,11 +48,16 @@ import enactors from "@/enactors.js";
 export default {
     name: "AppComponent",
     components: { ToolbarItem },
+    
     data() {
         return {
-            RTUs: []
+            RTUs: [],
+            requestOut: false,
+            updateIntervalID: null,
+            updateInterval: 10_000
         }
     },
+
     methods: {
         allRTUs() {
             return this.RTUs;
@@ -73,19 +78,48 @@ export default {
         mapDevice(id, func) {
             let device = this.findDevice(id);
             func(device);
+        },
+
+        async updateAllRTUs(mode) {
+            this.requestOut = true;
+            Object.values(this.RTUs).forEach((rtu, index) => {
+                bcs.update(rtu, mode, (response) => {
+                    this.RTUs[index] = response.data;
+                    this.requestOut = false;
+                });
+            });
         }
     },
+
+    async created() {
+        // Initialization
+        Promise.all(
+            bcs.RTU_addresses.map((addr) => bcs.findRTUAt(addr) )
+        ).then((results) => {
+            results.forEach(response => {
+                this.RTUs.push(response.data);
+            });
+        }).then(() => {
+            enactors.registerEnactorsWith(() => {
+                this.updateAllRTUs("Write")
+            });
+        }).then(() => {
+            this.updateIntervalID = setInterval(() => {
+                this.updateAllRTUs("Read");
+            }, this.updateInterval);
+        });
+    },
+
     async mounted() {
         window.root = this;
         window.bcs = bcs;
-        
-        bcs.RTU_addresses.forEach(async (addr) => {
-            this.RTUs.push(await bcs.findRTUAt(addr));
-        });
+        window.enactors = enactors;
+    },
 
-        setTimeout(() => {
-            enactors.registerEnactorsWith(() => console.log('one was clicked') );
-        }, 50);
+    watch: {
+        requestOut() {
+            enactors.setClickableState(!this.requestOut);
+        }
     }
 }
 </script>

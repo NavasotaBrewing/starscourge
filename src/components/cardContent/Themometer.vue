@@ -48,7 +48,7 @@ export default {
                 return;
 
             this.$root.mapDevice(this.thermometer.id, (thermo) => {
-                thermo.sv = this.newSv;
+                thermo.sv = parseFloat(this.newSv);
             });
             this.newSv = null;
             setTimeout(() => {
