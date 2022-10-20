@@ -53,8 +53,9 @@ export default {
                 items.push({
                     name: dev.name,
                     id: dev.id,
-                    driver: dev.driver,
-                    addr: dev.addr,
+                    driver: dev.controller.toString(),
+                    // If this value is 0, javascript turns it into '' instead of '0' because it's stupid
+                    addr: dev.addr.toString(),
                     controller_addr: dev.controller_addr
                 });
             });

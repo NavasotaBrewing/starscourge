@@ -10,9 +10,9 @@
             </w-toolbar>
         </template>
 
-        <RelayCardContent v-if="device.driver == 'Waveshare' || device.driver == 'STR1'" :device="device" />
+    <RelayCardContent v-if="device.controller == 'Waveshare' || device.controller == 'STR1'" :device="device" />
         <!-- Currently this is called Omega but I plan to rename it to CN7500 -->
-        <ThermometerCardContent v-if="device.driver == 'Omega' || device.driver == 'CN7500'" :thermometer="device" />
+        <ThermometerCardContent v-if="device.controller == 'Omega' || device.controller == 'CN7500'" :thermometer="device" />
     </w-card>
 
 </template>
