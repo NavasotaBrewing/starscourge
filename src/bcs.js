@@ -25,18 +25,12 @@ export default {
     },
 
     async update(rtu, mode, callback) {
-        // console.log(rtu);
         let url = this.buildFullAddr(
             rtu.ip_addr,
             mode == "Write" ? "/enact" : "/update"
         );
-
-        axios.post(url, rtu, {
-            headers: {
-                "content-type": "application/json",
-                "Access-Control-Allow-Origin": "*"
-            }
-        })
+        
+        axios.post(url, rtu)
             .then(callback)
             .catch((resp) => {
                 console.log(resp);

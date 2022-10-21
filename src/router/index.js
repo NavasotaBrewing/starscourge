@@ -5,11 +5,17 @@ const routes = [
     {
         path: "/",
         name: "Dashboard",
-        component: Dashboard
+        component: Dashboard,
+        meta: {
+            title: "Dashboard"
+        }
     },
     {
         path: "/dashboard",
-        redirect: "/"
+        redirect: "/",
+        meta: {
+            title: "Dashboard"
+        }
     }
 ];
 

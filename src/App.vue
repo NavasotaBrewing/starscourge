@@ -1,6 +1,5 @@
 <template>
     <w-app>
-
         <w-card id="main-content" class="grow" content-class="pa0">
             <w-toolbar vertical absolute left>
 
@@ -21,12 +20,22 @@
                 <ToolbarItem linkto="/" icon="fa fa-sitemap">Dashboard</ToolbarItem>
             </w-toolbar>
 
+            <!-- This is temporary, because we haven't configured the static IPs of the RTUs yet -->
+            <w-card id="rtuAddressOverwrite">
+                Temporary: put RTU IP addresses here, separated by a newline.
+                <w-textarea v-model="tempRTUAddresses"></w-textarea>
+                <w-button @click="findRTUs" class="mt2">Find</w-button>
+            </w-card>
 
             <router-view />
             <!-- <pre>{{ RTUs }}</pre> -->
 
+
         </w-card>
 
+        <div id="footer" w-flex>
+            last updated: {{ lastUpdate }}
+        </div>
 
 
     </w-app>
@@ -38,27 +47,73 @@
     padding-left: 80px;
     padding-top: 20px;
 }
+
+#rtuAddressOverwrite {
+    width: 30vw;
+}
+
+#footer {
+    padding-left: 1em;
+    padding-right: 1em;
+    height: 25px;
+    position: absolute;
+    width: calc(100vw - 60px);
+    left: 60px;
+    bottom: 0;
+    border-top: 1px solid #D9D9D9;
+    text-align: right;
+    background-color: white;
+}
 </style>
 
 <script>
 import ToolbarItem from '@/components/ToolbarItem.vue';
 import bcs from "@/bcs.js";
 import enactors from "@/enactors.js";
+import moment from "moment";
 
 export default {
     name: "AppComponent",
     components: { ToolbarItem },
-    
+
     data() {
         return {
             RTUs: [],
             requestOut: false,
             updateIntervalID: null,
-            updateInterval: 10_000
+            updateInterval: 7_000,
+            lastUpdate: moment().format('hh:mm:ss'),
+            paused: false,
+            tempRTUAddresses: "0.0.0.0",
         }
     },
 
     methods: {
+        // Initializes the whole system
+        initialize() {
+            Promise.all(
+                // Send requests to all RTUs on the list to see if they response
+                bcs.RTU_addresses.map((addr) => bcs.findRTUAt(addr))
+            ).then((results) => {
+                results.forEach(response => {
+                    this.RTUs.push(response.data);
+                });
+            }).then(() => {
+                // Enable all enactor buttons to send a request to {iris}/enact
+                enactors.registerEnactorsWith(() => {
+                    this.updateAllRTUs("Write")
+                });
+            }).then(() => {
+                // Set an interval ID to update every few seconds
+                this.updateIntervalID = setInterval(() => {
+                    if (!this.paused) {
+                        this.updateAllRTUs("Read");
+                        this.lastUpdate = moment().format('hh:mm:ss');
+                    }
+                }, this.updateInterval);
+            });
+        },
+
         allRTUs() {
             return this.RTUs;
         },
@@ -88,32 +143,23 @@ export default {
                     this.requestOut = false;
                 });
             });
+        },
+
+        // This is temporary, until we can get the static RTU IP addresses set
+        findRTUs() {
+            bcs.RTU_addresses = this.tempRTUAddresses.split("\n");
+            this.initialize();
         }
     },
 
     async created() {
-        // Initialization
-        Promise.all(
-            bcs.RTU_addresses.map((addr) => bcs.findRTUAt(addr) )
-        ).then((results) => {
-            results.forEach(response => {
-                this.RTUs.push(response.data);
-            });
-        }).then(() => {
-            enactors.registerEnactorsWith(() => {
-                this.updateAllRTUs("Write")
-            });
-        }).then(() => {
-            this.updateIntervalID = setInterval(() => {
-                this.updateAllRTUs("Read");
-            }, this.updateInterval);
-        });
+        // System Initialization
+        // this.initialize();
     },
 
     async mounted() {
-        window.root = this;
-        window.bcs = bcs;
-        window.enactors = enactors;
+        // Setting the page title here because I can't figure out the right way to change it?
+        document.title = "BCS Dashboard";
     },
 
     watch: {
