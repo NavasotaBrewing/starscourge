@@ -81,9 +81,10 @@ export default {
             RTUs: [],
             requestOut: false,
             updateIntervalID: null,
-            updateInterval: 7_000,
+            // 10_000 = 10 seconds
+            updateInterval: 10_000,
             lastUpdate: moment().format('hh:mm:ss'),
-            paused: false,
+            paused: true,
             tempRTUAddresses: "0.0.0.0",
         }
     },
@@ -111,6 +112,8 @@ export default {
                         this.lastUpdate = moment().format('hh:mm:ss');
                     }
                 }, this.updateInterval);
+            }).then(() => {
+                this.updateAllRTUs();
             });
         },
 
@@ -139,6 +142,7 @@ export default {
             this.requestOut = true;
             Object.values(this.RTUs).forEach((rtu, index) => {
                 bcs.update(rtu, mode, (response) => {
+                    console.log(response);
                     this.RTUs[index] = response.data;
                     this.requestOut = false;
                 });
@@ -147,19 +151,21 @@ export default {
 
         // This is temporary, until we can get the static RTU IP addresses set
         findRTUs() {
-            bcs.RTU_addresses = this.tempRTUAddresses.split("\n");
-            this.initialize();
+            // bcs.RTU_addresses = this.tempRTUAddresses.split("\n");
+            // this.initialize();
         }
     },
 
     async created() {
         // System Initialization
-        // this.initialize();
+        this.initialize();
     },
 
     async mounted() {
         // Setting the page title here because I can't figure out the right way to change it?
         document.title = "BCS Dashboard";
+        window.root = this;
+        window.bcs = bcs;
     },
 
     watch: {

@@ -53,10 +53,10 @@ export default {
                 items.push({
                     name: dev.name,
                     id: dev.id,
-                    driver: dev.controller.toString(),
+                    driver: dev.conn.controller.toString(),
                     // If this value is 0, javascript turns it into '' instead of '0' because it's stupid
-                    addr: dev.addr.toString(),
-                    controller_addr: dev.controller_addr
+                    addr: dev.conn.addr.toString(),
+                    controller_addr: dev.conn.controller_addr
                 });
             });
             return items;

@@ -1,5 +1,5 @@
 <template>
-    <div class="title1">{{ device.state }}</div>
+    <div class="title1">{{ device.state.relay_state }}</div>
     
     <w-flex>
         <div class="spacer"></div>
@@ -16,7 +16,7 @@ export default {
         toggleState(newState) {
             // Instead of emitting up multiple layers, we just mutate the roots data directly
             // This probably isn't great but it works
-            this.$root.mapDevice(this.device.id, (dev) => dev.state = newState );
+            this.$root.mapDevice(this.device.id, (dev) => dev.state.relay_state = newState );
         }
     }
 }

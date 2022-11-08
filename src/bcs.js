@@ -29,13 +29,18 @@ export default {
             rtu.ip_addr,
             mode == "Write" ? "/enact" : "/update"
         );
-        
-        axios.post(url, rtu)
-            .then(callback)
-            .catch((resp) => {
-                console.log(resp);
-            });
-        
+
+        axios({
+            method: 'post',
+            url: url,
+            data: rtu,
+            headers: {"content-type": "application/json"}
+        })
+        .then(callback)
+        .catch((error) => {
+            console.log("oh god oh fuck");
+            console.log(error);
+        })
         return;
     }
 }

@@ -1,12 +1,12 @@
 <template>
     <w-flex class="wrap">
-        <div class="title1">Actual: {{ thermometer.pv }} °F</div>
+        <div class="title1">Actual: {{ thermometer.state.pv }} °F</div>
     </w-flex>
     <w-flex>
-        <div class="title1">Setpoint: {{ thermometer.sv }} °F</div>
+        <div class="title1">Setpoint: {{ thermometer.state.sv }} °F</div>
     </w-flex>
     <w-flex class="mb6">
-        <div class="title1">Relay: {{ thermometer.state }}</div>
+        <div class="title1">Relay: {{ thermometer.state.relay_state }}</div>
     </w-flex>
     <w-form v-model="valid">
         <w-flex class="mb3">
@@ -39,7 +39,7 @@ export default {
     methods: {
         toggleState(newState) {
             this.$root.mapDevice(this.thermometer.id, (thermo) => {
-                thermo.state = newState;
+                thermo.state.relay_state = newState;
             });
         },
 
@@ -48,7 +48,7 @@ export default {
                 return;
 
             this.$root.mapDevice(this.thermometer.id, (thermo) => {
-                thermo.sv = parseFloat(this.newSv);
+                thermo.state.sv = parseFloat(this.newSv);
             });
             this.newSv = null;
             setTimeout(() => {
