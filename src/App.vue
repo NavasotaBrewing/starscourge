@@ -20,13 +20,6 @@
                 <ToolbarItem linkto="/" icon="fa fa-sitemap">Dashboard</ToolbarItem>
             </w-toolbar>
 
-            <!-- This is temporary, because we haven't configured the static IPs of the RTUs yet -->
-            <w-card id="rtuAddressOverwrite">
-                Temporary: put RTU IP addresses here, separated by a newline.
-                <w-textarea v-model="tempRTUAddresses"></w-textarea>
-                <w-button @click="findRTUs" class="mt2">Find</w-button>
-            </w-card>
-
             <router-view />
             <!-- <pre>{{ RTUs }}</pre> -->
 
@@ -79,42 +72,16 @@ export default {
     data() {
         return {
             RTUs: [],
-            requestOut: false,
-            updateIntervalID: null,
-            // 10_000 = 10 seconds
-            updateInterval: 10_000,
+            sockets: {},
             lastUpdate: moment().format('hh:mm:ss'),
-            paused: true,
-            tempRTUAddresses: "0.0.0.0",
         }
     },
 
     methods: {
         // Initializes the whole system
         initialize() {
-            Promise.all(
-                // Send requests to all RTUs on the list to see if they response
-                bcs.RTU_addresses.map((addr) => bcs.findRTUAt(addr))
-            ).then((results) => {
-                results.forEach(response => {
-                    this.RTUs.push(response.data);
-                });
-            }).then(() => {
-                // Enable all enactor buttons to send a request to {iris}/enact
-                enactors.registerEnactorsWith(() => {
-                    this.updateAllRTUs("Write")
-                });
-            }).then(() => {
-                // Set an interval ID to update every few seconds
-                this.updateIntervalID = setInterval(() => {
-                    if (!this.paused) {
-                        this.updateAllRTUs("Read");
-                        this.lastUpdate = moment().format('hh:mm:ss');
-                    }
-                }, this.updateInterval);
-            }).then(() => {
-                this.updateAllRTUs();
-            });
+            bcs.notify = this.$waveui.notify;
+            bcs.init(this);
         },
 
         allRTUs() {
@@ -137,23 +104,6 @@ export default {
             let device = this.findDevice(id);
             func(device);
         },
-
-        async updateAllRTUs(mode) {
-            this.requestOut = true;
-            Object.values(this.RTUs).forEach((rtu, index) => {
-                bcs.update(rtu, mode, (response) => {
-                    console.log(response);
-                    this.RTUs[index] = response.data;
-                    this.requestOut = false;
-                });
-            });
-        },
-
-        // This is temporary, until we can get the static RTU IP addresses set
-        findRTUs() {
-            // bcs.RTU_addresses = this.tempRTUAddresses.split("\n");
-            // this.initialize();
-        }
     },
 
     async created() {

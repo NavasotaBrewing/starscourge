@@ -1,46 +1,139 @@
 // This is an interface with the BCS, specifically the bcs_network master station
-
-import axios from "axios";
+import moment from "moment";
 
 export default {
     RTU_addresses: ["0.0.0.0"],
+    sockets: {},
+    app: {},
 
     // "0.0.0.0" -> "https://0.0.0.0:3012/route"
     buildFullAddr(IPv4Addr, route = "") {
         return "http://" + IPv4Addr + ":3012" + route;
     },
 
-    async findRTUAt(IPv4Addr) {
-        return axios.get(this.buildFullAddr(IPv4Addr, "/generate"))
-    },
+    // Connect to each websocket provided at RTU_addresses
+    // Store the websockets in sockets, with the RTU address as the key
+    // on_message is the callback that happens when an incoming message is sent
+    init(app) {
+        this.app = app;
+        // For every device saved in RTU_addresses
+        this.RTU_addresses.map((addr) => {
+            // Connect to that websocket
+            this.connect_websocket(addr, (socket) => {
+                // Log when we disconnect
+                socket.onclose = (event) => {
+                    let rtu = app.RTUs.find((rtu) => rtu.ip_addr == addr);
+                    app.$waveui.notify("WebSocket connection to " + rtu.name + " closed", "error");
+                    console.log("WebSocket closed for addr: ", addr);
+                    console.log(event);
+                }
 
-    async testConnection(IPv4Addr) {
-        return axios.get(this.buildFullAddr(IPv4Addr, "/running"))
-            .then((resp) => {
-                return resp.data.running;
-            })
-            .catch(() => {
-                return false;
+                // Log errors
+                socket.onerror = (error) => {
+                    app.$waveui.notify("WebSocket Error. See the console", "danger");
+                    console.log(error);
+                }
+
+                // Update RTUs when we get a message from the websocket
+                socket.onmessage = (msg) => this.onMessage(msg, this.app);
+                this.sockets[addr] = socket;
             });
+        })
     },
 
-    async update(rtu, mode, callback) {
-        let url = this.buildFullAddr(
-            rtu.ip_addr,
-            mode == "Write" ? "/enact" : "/update"
-        );
+    // Handle incoming messages from the websocket
+    onMessage(msg, app) {
+        let event = JSON.parse(msg.data);
+        app.lastUpdate = moment().format('hh:mm:ss');
+        switch (event.response_type) {
 
-        axios({
-            method: 'post',
-            url: url,
-            data: rtu,
-            headers: {"content-type": "application/json"}
-        })
-        .then(callback)
-        .catch((error) => {
-            console.log("oh god oh fuck");
-            console.log(error);
-        })
+            case "RTUUpdateResult": {
+                // Update the proper RTU
+                let found_index = app.RTUs.findIndex((rtu) => rtu.id == event.data.RTU.id);
+                if (found_index == -1) {
+                    app.RTUs.push(event.data.RTU);
+                } else {
+                    app.RTUs[found_index] = event.data.RTU;
+                }
+                break;
+            }
+
+            case "DeviceUpdateResult": {
+                // Happens when you manually request a device update
+                // Update only a specific device
+                let incoming_device = event.data.Device;
+                app.RTUs.forEach(rtu => {
+                    let found_index = rtu.devices.findIndex((dev) => dev.id == incoming_device.id);
+                    if (found_index == -1) {
+                        console.log("Error, couldn't find device with id: ", incoming_device.id);
+                    } else {
+                        rtu.devices[found_index] = incoming_device;
+                    }
+                });
+
+                break;
+            }
+
+            case "DeviceEnactResult": {
+                break;
+            }
+
+            default: {
+                console.log("Unknown event response type: ", msg.response_type);
+                break;
+            }
+        }
+    },
+
+    // Connect to a websocket and pass it to the callback
+    connect_websocket(addr, callback) {
+        let url = this.buildFullAddr(addr, "/register");
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.onreadystatechange = function () {
+            if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+                let payload = JSON.parse(xmlHttp.responseText);
+                let websocket = new WebSocket(payload.url);
+                callback(websocket);
+            }
+        }
+        xmlHttp.open("GET", url, true);
+        xmlHttp.send(null);
         return;
+    },
+
+
+    // Searches all the RTUs for the proper device, then sends a message through that 
+    // RTUs websocket to enact the device
+    enactDevice(device_id) {
+        // This is really dumb but javascript is dumber
+        this.app.RTUs.forEach((rtu) => {
+            let found_dev = rtu.devices.find((dev) => dev.id == device_id);
+            if (found_dev != null) {
+                let socket = this.sockets[rtu.ip_addr];
+                socket.send(JSON.stringify({
+                    event_type: "DeviceEnact",
+                    device: found_dev
+                }))
+            } else {
+                console.log("Couldn't find device with id: ", device_id);
+            }
+        });
+    },
+
+    // Manually update a device
+    // The BCS init method has the handler for the response method
+    updateDevice(device_id) {
+        this.app.RTUs.forEach((rtu) => {
+            let found_dev = rtu.devices.find((dev) => dev.id == device_id);
+            if (found_dev != null) {
+                let socket = this.sockets[rtu.ip_addr];
+                socket.send(JSON.stringify({
+                    event_type: "DeviceUpdate",
+                    device: found_dev
+                }))
+            } else {
+                console.log("Couldn't find device with id: ", device_id);
+            }
+        });
     }
 }

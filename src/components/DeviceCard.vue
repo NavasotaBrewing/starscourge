@@ -10,9 +10,10 @@
             </w-toolbar>
         </template>
 
-    <RelayCardContent v-if="device.conn.controller == 'Waveshare' || device.conn.controller == 'STR1'" :device="device" />
-        <!-- Currently this is called Omega but I plan to rename it to CN7500 -->
-        <ThermometerCardContent v-if="device.conn.controller == 'Omega' || device.conn.controller == 'CN7500'" :thermometer="device" />
+        <RelayCardContent v-if="isRelay()"
+            :device="device" />
+        <ThermometerCardContent v-if="isThermometer()"
+            :thermometer="device" />
     </w-card>
 
 </template>
@@ -25,7 +26,17 @@ import ThermometerCardContent from "@/components/cardContent/Themometer.vue";
 export default {
     name: "DeviceCard",
     components: { RelayCardContent, ThermometerCardContent },
-    props: ["device", "rtu"]
+    props: ["device", "rtu"],
+    methods: {
+        isRelay() {
+            let relay_types = ["STR1", "Waveshare", "WaveshareV2"];
+            return relay_types.indexOf(this.device.conn.controller) != -1;
+        },
+        isThermometer() {
+            let thermo_types = ["CN7500"];
+            return thermo_types.indexOf(this.device.conn.controller) != -1;
+        },
+    }
 }
 
 </script>

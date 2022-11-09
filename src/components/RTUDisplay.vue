@@ -8,10 +8,10 @@
         <hr class="mb2" />
         <w-table class="mb3" :headers="deviceTableHeaders()" :items="deviceTableItems(rtu.devices)" />
 
-        <template #actions>
+        <!-- <template #actions>
             <div class="spacer"></div>
             <w-button @click="testConnection(rtu)" bg-color="success">Test Connection</w-button>
-        </template>
+        </template> -->
     </w-card>
 
 </template>
@@ -19,7 +19,6 @@
 
 
 <script>
-import bcs from "@/bcs.js";
 export default {
     name: "RTUDisplay",
     props: ["rtu"],
@@ -60,15 +59,6 @@ export default {
                 });
             });
             return items;
-        },
-
-        async testConnection(rtu) {
-            let resp = await bcs.testConnection(rtu.ip_addr);
-            if (resp) {
-                this.$waveui.notify(rtu.name + " is connected!", "success");
-            } else {
-                this.$waveui.notify(rtu.name + " didn't respond", "danger");
-            }
         }
     }
 }

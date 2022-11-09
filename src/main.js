@@ -26,5 +26,4 @@ new WaveUI(app, {
     }
 });
 
-
 app.use(router).mount('#app');

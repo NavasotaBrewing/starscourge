@@ -15,10 +15,10 @@
     </w-flex>
     <div v-if="RTUs().length == 0">
         <w-flex  class="justify-center">
-            <div class="title1">No RTUs found</div>
+            <div class="title1">Connecting to RTUs...</div>
         </w-flex>
         <w-flex class="justify-center">
-            <pre>Locations tested: {{ addresses() }}</pre>
+            <pre>Locations: {{ addresses() }}</pre>
         </w-flex>
     </div>
 </template>
@@ -36,7 +36,7 @@ export default {
     },
     methods: {
         RTUs() {
-            return this.$root.RTUs;
+            return this.$root.allRTUs();
         },
 
         addresses() {
