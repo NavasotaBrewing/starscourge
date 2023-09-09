@@ -100,6 +100,7 @@ export default {
             return this.allDevices().find((dev) => dev.id == id);
         },
 
+        // Apply the given function to a device with the given ID
         mapDevice(id, func) {
             let device = this.findDevice(id);
             func(device);
