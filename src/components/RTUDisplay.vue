@@ -4,14 +4,9 @@
         <hr class="mb2" />
         <pre><w-list :items="RTUAttributesAsList(rtu)" icon="fa fa-cog"></w-list></pre>
 
-        <div class="title3 mb1 mt3">Devices ({{ rtu.devices.length }})</div>
+        <div class="title3 mb1 mt3">Device Cluster ({{ rtu.devices.length }} devices)</div>
         <hr class="mb2" />
         <w-table class="mb3" :headers="deviceTableHeaders()" :items="deviceTableItems(rtu.devices)" />
-
-        <!-- <template #actions>
-            <div class="spacer"></div>
-            <w-button @click="testConnection(rtu)" bg-color="success">Test Connection</w-button>
-        </template> -->
     </w-card>
 
 </template>
@@ -24,13 +19,13 @@ export default {
     props: ["rtu"],
     methods: {
         makeLabel(labelName, value) {
-            return { label: labelName + ": `" + value + "`" };
+            return { label: labelName + ": " + value };
         },
 
         RTUAttributesAsList(rtu) {
             let list = [];
             list.push(this.makeLabel("ID", rtu.id));
-            list.push(this.makeLabel("Devices Found", rtu.devices.length));
+            list.push(this.makeLabel("Devices found", rtu.devices.length));
             return list;
         },
 

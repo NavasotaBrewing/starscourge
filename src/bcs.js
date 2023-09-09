@@ -1,7 +1,20 @@
-// This is an interface with the BCS, specifically the bcs_network master station
 import moment from "moment";
 
+class EventResponse {
+    constructor(obj) {
+        this.response_type = obj.response_type;
+        this.data = obj.data;
+        this.message = obj.message;
+    }
+
+    isError() {
+        return this.response_type == "Error"
+    }
+}
+
 export default {
+    // TODO: eventually we want to either ask for a list of these, or have a hardcoded list 
+    // if our network setup is actually static.
     RTU_addresses: ["0.0.0.0"],
     sockets: {},
     app: {},
@@ -43,7 +56,7 @@ export default {
 
     // Handle incoming messages from the websocket
     onMessage(msg, app) {
-        let event = JSON.parse(msg.data);
+        let event = new EventResponse(JSON.parse(msg.data));
         app.lastUpdate = moment().format('hh:mm:ss');
         switch (event.response_type) {
 
@@ -59,22 +72,34 @@ export default {
             }
 
             case "DeviceUpdateResult": {
+                // Update: API changed to return multiple devices.
+                // There might be a more efficent want to do this.
+
                 // Happens when you manually request a device update
                 // Update only a specific device
-                let incoming_device = event.data.Device;
+                let incoming_devices = event.data.devices;
                 app.RTUs.forEach(rtu => {
-                    let found_index = rtu.devices.findIndex((dev) => dev.id == incoming_device.id);
-                    if (found_index == -1) {
-                        console.log("Error, couldn't find device with id: ", incoming_device.id);
-                    } else {
-                        rtu.devices[found_index] = incoming_device;
-                    }
+                    incoming_devices.forEach(incoming_device => {
+                        let found_index = rtu.devices.findIndex((dev) => dev.id == incoming_device.id);
+                        if (found_index == -1) {
+                            console.log("Error, couldn't find device with id: ", incoming_device.id);
+                        } else {
+                            rtu.devices[found_index] = incoming_device;
+                        }
+                    })
                 });
 
                 break;
             }
 
             case "DeviceEnactResult": {
+                console.log("DeviceEnactResult returned");
+                break;
+            }
+
+            case "Error": {
+                console.error("Iris server returned an error: ", event.message);
+                console.error(event.data);
                 break;
             }
 
@@ -89,7 +114,7 @@ export default {
     connect_websocket(addr, callback) {
         let url = this.buildFullAddr(addr, "/register");
         var xmlHttp = new XMLHttpRequest();
-        xmlHttp.onreadystatechange = function () {
+        xmlHttp.onreadystatechange = function() {
             if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
                 let payload = JSON.parse(xmlHttp.responseText);
                 let websocket = new WebSocket(payload.url);
@@ -112,7 +137,7 @@ export default {
                 let socket = this.sockets[rtu.ip_addr];
                 socket.send(JSON.stringify({
                     event_type: "DeviceEnact",
-                    device: found_dev
+                    devices: [found_dev]
                 }))
             } else {
                 console.log("Couldn't find device with id: ", device_id);
@@ -129,7 +154,7 @@ export default {
                 let socket = this.sockets[rtu.ip_addr];
                 socket.send(JSON.stringify({
                     event_type: "DeviceUpdate",
-                    device: found_dev
+                    devices: [found_dev]
                 }))
             } else {
                 console.log("Couldn't find device with id: ", device_id);
