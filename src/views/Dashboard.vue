@@ -1,12 +1,12 @@
 <template>
     <w-flex wrap v-for="rtu in RTUs()" :key="rtu.id">
         <!-- RTU display column -->
-        <div class="pa2 xl4 lg4 md12">
+        <div class="pa2 xl4 lg4 md12 sm12 xs12">
             <RTUDisplay :rtu="rtu" />
         </div>
 
         <!-- Relays column -->
-        <div class="pa2 xl3 lg4 md12">
+        <div class="pa2 xl4 lg3 md6 sm12 xs12">
             <w-card class="grow" title-class="blue-light5--bg title1" :title="'Relays on ' + rtu.name">
                 <div class="mb2 xs12" v-for="dev in relays(rtu)" :key="dev.id">
                     <RelaySwitch :device="dev" />
@@ -14,7 +14,7 @@
             </w-card>
         </div>
 
-        <div class="pa2 lg4 md12">
+        <div class="pa2 xl4 lg5 md6 sm12 xs12">
             <w-card class="grow" title-class="blue-light5--bg title1" :title="'Thermometers on ' + rtu.name">
                 <div class="mb2 xs12" v-for="dev in thermometers(rtu)" :key="dev.id">
                     <ThermometerControl :thermo="dev" />
