@@ -29,6 +29,7 @@ export default {
     // on_message is the callback that happens when an incoming message is sent
     init(app) {
         this.app = app;
+        this.app.$waveui.notify("Initializing");
         // For every device saved in RTU_addresses
         this.RTU_addresses.map((addr) => {
             // Connect to that websocket
@@ -50,6 +51,7 @@ export default {
                 // Update RTUs when we get a message from the websocket
                 socket.onmessage = (msg) => this.onMessage(msg, this.app);
                 this.sockets[addr] = socket;
+                this.app.$waveui.notify('Connected made to ' + addr, 'success');
             });
         })
     },
@@ -61,6 +63,8 @@ export default {
         switch (event.response_type) {
 
             case "RTUUpdateResult": {
+                console.log("RTUUpdateResult returned");
+                console.log(event);
                 // Update the proper RTU
                 let found_index = app.RTUs.findIndex((rtu) => rtu.id == event.data.RTU.id);
                 if (found_index == -1) {
@@ -75,6 +79,8 @@ export default {
                 // Update: API changed to return multiple devices.
                 // There might be a more efficent want to do this.
 
+                console.log("DeviceUpdateResult returned");
+                console.log(event);
                 // Happens when you manually request a device update
                 // Update only a specific device
                 let incoming_devices = event.data.devices;
@@ -94,12 +100,15 @@ export default {
 
             case "DeviceEnactResult": {
                 console.log("DeviceEnactResult returned");
+                console.log(event);
                 break;
             }
 
             case "Error": {
                 console.error("Iris server returned an error: ", event.message);
-                console.error(event.data);
+                console.error(event);
+                this.app.$waveui.notify("Iris server returned an error. Try again.", 'error', 8000);
+                this.app.$waveui.notify(event.message, 'error', 8000);
                 break;
             }
 
