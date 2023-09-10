@@ -18,6 +18,7 @@
                 <w-divider class="my6"></w-divider>
 
                 <ToolbarItem linkto="/" icon="fa fa-sitemap">Dashboard</ToolbarItem>
+                <ToolbarItem linkto="/sand" icon="fa fa-sitemap">Sandbox</ToolbarItem>
             </w-toolbar>
 
             <router-view />

@@ -7,14 +7,19 @@
 
         <!-- Relays column -->
         <div class="pa2 xl3 lg4 md12">
-            <div class="mb2 xl4 lg6 md12" v-for="dev in relays(rtu)" :key="dev.id">
-                <!-- TODO: Add new thermometer design here -->
-                <RelaySwitch :device="dev" />
-            </div>
+            <w-card class="grow" title-class="blue-light5--bg title1" :title="'Relays on ' + rtu.name">
+                <div class="mb2 xs12" v-for="dev in relays(rtu)" :key="dev.id">
+                    <RelaySwitch :device="dev" />
+                </div>
+            </w-card>
         </div>
 
-        <div class="pa2 xl5 lg4 md12" v-for="thermo in thermometers(rtu)" :key="thermo.id">
-            <ThermometerControl :thermo="thermo" />
+        <div class="pa2 lg4 md12">
+            <w-card class="grow" title-class="blue-light5--bg title1" :title="'Thermometers on ' + rtu.name">
+                <div class="mb2 xs12" v-for="dev in thermometers(rtu)" :key="dev.id">
+                    <ThermometerControl :thermo="dev" />
+                </div>
+            </w-card>
         </div>
 
     </w-flex>
