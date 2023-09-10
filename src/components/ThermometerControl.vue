@@ -53,7 +53,6 @@ export default {
         },
 
         setNewSetpoint() {
-            console.log('hello?');
             if (this.newSetpoint == '') {
                 this.$waveui.notify('New setpoint value must be present', 'error');
                 return;
