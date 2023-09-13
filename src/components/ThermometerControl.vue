@@ -37,7 +37,7 @@
 
 <script>
 import RelaySwitch from "@/components/RelaySwitch.vue";
-import bcs from "@/bcs.js";
+
 export default {
     name: 'ThermometerControl',
     props: ['thermo'],
@@ -71,7 +71,7 @@ export default {
             }
 
             this.$root.mapDevice(this.thermo.id, (dev) => dev.state.sv = newSetpoint );
-            bcs.enactDevice(this.thermo.id);
+            this.$root.bcs.enactDevice(this.thermo.id);
             this.newSetpoint = '';
         }
     }

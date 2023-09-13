@@ -62,8 +62,7 @@
 
 <script>
 import ToolbarItem from '@/components/ToolbarItem.vue';
-import bcs from "@/bcs.js";
-import enactors from "@/enactors.js";
+import BCS from "@/bcs/bcs.js";
 import moment from "moment";
 
 export default {
@@ -81,7 +80,7 @@ export default {
     methods: {
         // Initializes the whole system
         initialize() {
-            bcs.init(this, this.$waveui.notify);
+            this.bcs = new BCS(this);
         },
 
         allRTUs() {
@@ -115,14 +114,6 @@ export default {
     async mounted() {
         // Setting the page title here because I can't figure out the right way to change it?
         document.title = "BCS Dashboard";
-        window.root = this;
-        window.bcs = bcs;
-    },
-
-    watch: {
-        requestOut() {
-            enactors.setClickableState(!this.requestOut);
-        }
     }
 }
 </script>

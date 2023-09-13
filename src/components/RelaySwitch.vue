@@ -73,19 +73,15 @@
 </style>
 
 <script>
-import bcs from "../bcs.js";
 export default {
     name: "RelaySwitch",
     props: ["device", "hideLabel", "customLabel"],
     methods: {
         setNewState(newState) {
-            // Instead of emitting up multiple layers, we just mutate the roots data directly
-            // This probably isn't great but it works
-
-            // Manually update the state on the RTU so that the switch state updates
+            // Manually update the state on the web interface
             this.$root.mapDevice(this.device.id, (dev) => dev.state.relay_state = newState );
             // Then actually send the enact event so the real device updates
-            bcs.enactDevice(this.device.id);
+            this.$root.bcs.enactDevice(this.device.id);
         },
 
         isOn() {

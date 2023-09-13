@@ -38,7 +38,6 @@
 import RTUDisplay from "@/components/RTUDisplay.vue";
 import RelaySwitch from "@/components/RelaySwitch.vue";
 import ThermometerControl from "@/components/ThermometerControl.vue";
-import bcs from "@/bcs.js";
 
 export default {
     name: "DashboardComponent",
@@ -52,7 +51,7 @@ export default {
         },
 
         addresses() {
-            return bcs.RTU_addresses;
+            return this.$root.bcs.socket_man.RTU_addresses;
         },
 
         relays(rtu) {
