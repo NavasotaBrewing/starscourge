@@ -12,52 +12,34 @@ class EventResponse {
     }
 }
 
-export default {
-    // TODO: eventually we want to either ask for a list of these, or have a hardcoded list 
-    // if our network setup is actually static.
-    RTU_addresses: ["0.0.0.0"],
-    sockets: {},
-    app: {},
+class BCS {
+    constructor() {
+        this.RTU_addresses = ["0.0.0.0"];
+        this.sockets = {};
+        this.app = {}
+    }
 
-    // "0.0.0.0" -> "https://0.0.0.0:3012/route"
+    notify(msg, level) {
+        this.app.$waveui.notify(msg, level);
+    }
+
     buildFullAddr(IPv4Addr, route = "") {
         return "http://" + IPv4Addr + ":3012" + route;
-    },
+    }
 
-    // Connect to each websocket provided at RTU_addresses
-    // Store the websockets in sockets, with the RTU address as the key
-    // on_message is the callback that happens when an incoming message is sent
-    init(app) {
-        this.app = app;
-        this.app.$waveui.notify("Initializing");
-        // For every device saved in RTU_addresses
-        this.RTU_addresses.map((addr) => {
-            // Connect to that websocket
-            this.connect_websocket(addr, (socket) => {
-                // Log when we disconnect
-                socket.onclose = (event) => {
-                    let rtu = app.RTUs.find((rtu) => rtu.ip_addr == addr);
-                    app.$waveui.notify("WebSocket connection to " + rtu.name + " closed", "error");
-                    console.log("WebSocket closed for addr: ", addr);
-                    console.log(event);
-                }
+    on_websocket_disconnect(addr, event) {
+        let rtu = this.app.RTUs.find((rtu) => rtu.ip_addr == addr);
+        this.notify("WebSocket connection to " + rtu.name + " closed", "error");
+        console.log(event);
+    }
 
-                // Log errors
-                socket.onerror = (error) => {
-                    app.$waveui.notify("WebSocket Error. See the console", "danger");
-                    console.log(error);
-                }
-
-                // Update RTUs when we get a message from the websocket
-                socket.onmessage = (msg) => this.onMessage(msg, this.app);
-                this.sockets[addr] = socket;
-                this.app.$waveui.notify('Connected made to ' + addr, 'success');
-            });
-        })
-    },
+    on_websocket_error(event) {
+        this.notify("WebSocket Error. See the console", "danger");
+        console.log(event);
+    }
 
     // Handle incoming messages from the websocket
-    onMessage(msg, app) {
+    on_websocket_message(msg, app) {
         let event = new EventResponse(JSON.parse(msg.data));
         app.lastUpdate = moment().format('hh:mm:ss');
         switch (event.response_type) {
@@ -117,24 +99,48 @@ export default {
                 break;
             }
         }
-    },
+    }
 
     // Connect to a websocket and pass it to the callback
-    connect_websocket(addr, callback) {
+    register_websocket(addr, callback) {
+        // Send a get request to 0.0.0.0:3012/register
+        // It returns a websocket url
         let url = this.buildFullAddr(addr, "/register");
         var xmlHttp = new XMLHttpRequest();
         xmlHttp.onreadystatechange = function() {
             if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+                // Get the response object
                 let payload = JSON.parse(xmlHttp.responseText);
+                // and create a new websocket with the returned url
                 let websocket = new WebSocket(payload.url);
+                // Call the callback on the websocket
                 callback(websocket);
             }
         }
         xmlHttp.open("GET", url, true);
         xmlHttp.send(null);
         return;
-    },
+    }
 
+    // Connect to each websocket provided at RTU_addresses
+    // Store the websockets in sockets, with the RTU address as the key
+    // on_message is the callback that happens when an incoming message is sent
+    init(app) {
+        // Store a reference to the Vue app
+        this.app = app;
+        this.notify("Initializing");
+        // For every device saved in RTU_addresses
+        this.RTU_addresses.map((addr) => {
+            // Connect to that websocket
+            this.register_websocket(addr, (socket) => {
+                socket.onclose = (event) => this.on_websocket_disconnect(addr, event);
+                socket.onerror = (event) => this.on_websocket_error(event);
+                socket.onmessage = (event) => this.on_websocket_message(event, this.app);
+                this.sockets[addr] = socket;
+                this.notify('Connection made to ' + addr, 'success');
+            });
+        })
+    }
 
     // Searches all the RTUs for the proper device, then sends a message through that 
     // RTUs websocket to enact the device
@@ -152,7 +158,7 @@ export default {
                 console.log("Couldn't find device with id: ", device_id);
             }
         });
-    },
+    }
 
     // Manually update a device
     // The BCS init method has the handler for the response method
@@ -171,3 +177,6 @@ export default {
         });
     }
 }
+
+
+export default new BCS();

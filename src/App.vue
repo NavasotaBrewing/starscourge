@@ -81,8 +81,7 @@ export default {
     methods: {
         // Initializes the whole system
         initialize() {
-            bcs.notify = this.$waveui.notify;
-            bcs.init(this);
+            bcs.init(this, this.$waveui.notify);
         },
 
         allRTUs() {
