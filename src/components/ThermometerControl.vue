@@ -20,8 +20,8 @@
                 </div>
                 <div class="xs6 text-right">
                     <w-flex class="align-end">
-                        <w-input label="New Setpoint" id="newSetpointInput" v-model="newSetpoint"></w-input>
-                        <w-button class="ma1 text-left" bg-color="primary" id="newSetpointButton" @click="setNewSetpoint" md>Set</w-button>
+                        <w-input :disabled="$root.isLocked()" label="New Setpoint" id="newSetpointInput" v-model="newSetpoint"></w-input>
+                        <w-button :disabled="$root.isLocked()" class="ma1 text-left" bg-color="primary" id="newSetpointButton" @click="setNewSetpoint" md>Set</w-button>
                     </w-flex>
                 </div>
             </w-flex>

@@ -18,7 +18,6 @@
                 <w-divider class="my6"></w-divider>
 
                 <ToolbarItem linkto="/" icon="fa fa-sitemap">Dashboard</ToolbarItem>
-                <ToolbarItem linkto="/sand" icon="fa fa-sitemap">Sandbox</ToolbarItem>
             </w-toolbar>
 
             <router-view />
@@ -74,6 +73,10 @@ export default {
             RTUs: [],
             sockets: {},
             lastUpdate: moment().format('hh:mm:ss'),
+            // The BCS sends out lock/unlock events.
+            // We shouldn't send any event in the interval between a lock and unlock.
+            // We use this flag to change UI styles and prevent clicks/sending events.
+            locked: false
         }
     },
 
@@ -81,6 +84,10 @@ export default {
         // Initializes the whole system
         initialize() {
             this.bcs = new BCS(this);
+        },
+
+        isLocked() {
+            return this.locked;
         },
 
         allRTUs() {

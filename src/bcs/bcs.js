@@ -45,6 +45,12 @@ class BCS {
         });
     }
 
+    handleDeviceEnactResult(event) {
+        // For now, we actually want to do the same behavior as update.
+        // Just update the state with the returned device.
+        this.handleDeviceUpdateResult(event);
+    }
+
     on_error = (event, addr) => {
         this.notify("Websocket error from " + addr + ". See console.", 'error', 10000);
         console.log(event);
@@ -69,6 +75,20 @@ class BCS {
                 this.handleDeviceUpdateResult(event);
                 break;
             }
+            case "DeviceEnactResult": {
+                this.handleDeviceEnactResult(event);
+                break;
+            }
+            case "Lock": {
+                this.app.locked = true;
+                console.log("locked");
+                break;
+            }
+            case "Unlock": {
+                this.app.locked = false;
+                console.log("unlocked");
+                break;
+            }
             case "Error": {
                 this.notify("Iris server returned an error", 'error', 6000);
                 this.notify(event.message, 'error', 8000);
@@ -86,6 +106,10 @@ class BCS {
     // Sends either a DeviceUpdate or DeviceEnact event, with the device
     // that has the given ID attached.
     sendDeviceEvent(eventType, deviceId) {
+        if (this.app.isLocked()) {
+            return;
+        }
+
         this.app.RTUs.forEach((rtu) => {
             let found_dev = rtu.devices.find((dev) => dev.id == deviceId);
             if (found_dev != null) {
