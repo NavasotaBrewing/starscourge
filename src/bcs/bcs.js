@@ -6,13 +6,17 @@ import { Event, EventResponse } from "@/bcs/event.js";
 class BCS {
     constructor(app) {
         this.app = app;
-        this.socket_man = new SocketManager(this.app.$waveui.notify, this.on_message);
+        this.notify = app.$waveui.notify;
+        // Create a new socket manager and give it our handlers
+        this.socket_man = new SocketManager(
+            this.notify,
+            this.on_message,
+            this.on_error,
+            this.on_close
+        );
         this.socket_man.init();
     }
 
-    notify(msg, level) {
-        this.app.$waveui.notify(msg, level);
-    }
 
     handleRTUUpdateResult(event) {
         // This is an entire RTU (including many devices).
@@ -41,13 +45,24 @@ class BCS {
         });
     }
 
-    on_message = (msg) => {
+    on_error = (event, addr) => {
+        this.notify("Websocket error from " + addr + ". See console.", 'error', 10000);
+        console.log(event);
+    }
+
+    on_close = (event, addr) => {
+        this.notify("Connection to " + addr + " closed.", 'error', 8000);
+        console.log(event);
+    }
+
+    on_message = (msg, addr) => {
         let event = new EventResponse(msg);
         this.app.lastUpdate = moment().format('hh:mm:ss');
 
         switch (event.response_type) {
             case "RTUUpdateResult": {
                 this.handleRTUUpdateResult(event);
+                this.notify('RTU update from ' + addr, 'success', 2000);
                 break;
             }
             case "DeviceUpdateResult": {

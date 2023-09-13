@@ -34,9 +34,14 @@ class SocketManager {
                 // and create a new websocket with the returned url
                 let websocket = new WebSocket(payload.url);
                 // Attach the handlers
-                websocket.onclose = this.on_close;
-                websocket.onerror = this.on_error;
-                websocket.onmessage = this.on_message;
+                // We pass the incoming event and also the addr
+                // addr is just for notifications, so the user can
+                // tell which RTU is reporting what.
+                // TODO: change this to the RTU ID instead of the IP
+                // We'll have to include it in the original register payload
+                websocket.onerror = (event) => this.on_error(event, addr);
+                websocket.onmessage = (event) => this.on_message(event, addr);
+                websocket.onclose = (event) => this.on_close(event, addr);
                 // And keep track of the sockets
                 this.sockets[addr] = websocket;
                 this.notify('Connection made to ' + addr, 'success');
