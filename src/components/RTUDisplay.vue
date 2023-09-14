@@ -7,6 +7,17 @@
         <div class="title3 mb1 mt3">Device Cluster ({{ rtu.devices.length }} devices)</div>
         <hr class="mb2" />
         <w-table class="mb3" :headers="deviceTableHeaders()" :items="deviceTableItems(rtu.devices)" />
+
+            <template #actions>
+                <div class="spacer"></div>
+
+                <w-confirm
+                    @confirm="resetRTU"
+                    transition="slide-fade-up"
+                    class="ma1" lg>
+                    Reset RTU to Default State
+                </w-confirm>
+            </template>
     </w-card>
 
 </template>
@@ -54,6 +65,10 @@ export default {
                 });
             });
             return items;
+        },
+
+        resetRTU() {
+            this.$root.bcs.resetRTUToDefaultState(this.rtu.ip_addr);
         }
     }
 }

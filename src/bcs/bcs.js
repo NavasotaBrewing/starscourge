@@ -40,6 +40,7 @@ class BCS {
                     console.log("Error, couldn't find device with id: ", incoming_device.id);
                 } else {
                     rtu.devices[found_index] = incoming_device;
+                    console.log("Updated device", incoming_device.name);
                 }
             })
         });
@@ -81,12 +82,10 @@ class BCS {
             }
             case "Lock": {
                 this.app.locked = true;
-                console.log("locked");
                 break;
             }
             case "Unlock": {
                 this.app.locked = false;
-                console.log("unlocked");
                 break;
             }
             case "Error": {
@@ -127,6 +126,11 @@ class BCS {
 
     updateDevice(deviceId) {
         this.sendDeviceEvent("DeviceUpdate", deviceId);
+    }
+
+    resetRTUToDefaultState(rtu_ip) {
+        let event = new Event("RTUReset", []);
+        this.socket_man.sendEventTo(event, rtu_ip);
     }
 }
 

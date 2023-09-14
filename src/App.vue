@@ -21,7 +21,6 @@
             </w-toolbar>
 
             <router-view />
-            <!-- <pre>{{ RTUs }}</pre> -->
 
 
         </w-card>
@@ -121,6 +120,7 @@ export default {
     async mounted() {
         // Setting the page title here because I can't figure out the right way to change it?
         document.title = "BCS Dashboard";
+        window.app = this;
     }
 }
 </script>
