@@ -1,6 +1,6 @@
 import { createWebHistory, createRouter } from "vue-router";
 import Dashboard from "@/views/Dashboard.vue";
-import Sandbox from "@/views/Sandbox.vue";
+import Scenes from "@/views/Scenes.vue";
 
 const routes = [
     {
@@ -19,11 +19,11 @@ const routes = [
         }
     },
     {
-        path: "/sand",
-        name: "Sandbox",
-        component: Sandbox,
+        path: "/scenes",
+        name: "Scenes",
+        component: Scenes,
         meta: {
-            title: "Sandbox"
+            title: "Scenes"
         }
     }
 ];

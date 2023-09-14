@@ -9,7 +9,7 @@
                 <div class="title1">{{ asFloat(thermo.state.pv) }} F</div>
             </div>
             <div class="xs6">
-                <RelaySwitch class="thermo-relay-switch" customLabel="Relay" :device="thermo" />
+                <RelaySwitch class="thermo-relay-switch" customLabel="Relay" @deviceEnacted="setNewRelayState($event)" :device="thermo" />
             </div>
         </w-flex>
         <div class="mt8">
@@ -70,9 +70,24 @@ export default {
                 return;
             }
 
-            this.$root.mapDevice(this.thermo.id, (dev) => dev.state.sv = newSetpoint );
-            this.$root.bcs.enactDevice(this.thermo.id);
+            this.$emit('deviceEnacted', {
+                id: this.thermo.id,
+                new_state: {
+                    sv: newSetpoint,
+                    // Send this along with it so we maintain the pv and it doesn't become NaN
+                    pv: this.thermo.state.pv,
+                    relay_state: this.thermo.state.relay_state
+                }
+            })
             this.newSetpoint = '';
+        },
+
+        setNewRelayState(event) {
+            // Normally we could just bubble up the event, but for the thermometer we 
+            // want to maintain the sv and pv. We'll add it here
+            event.new_state.pv = this.thermo.state.pv;
+            event.new_state.sv = this.thermo.state.sv;
+            this.$emit('deviceEnacted', event);
         }
     }
 }

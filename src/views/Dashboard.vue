@@ -5,22 +5,10 @@
             <RTUDisplay :rtu="rtu" />
         </div>
 
-        <!-- Relays column -->
-        <div class="pa2 xl4 lg3 md6 sm12 xs12">
-            <w-card class="grow" title-class="blue-light5--bg title1" :title="'Relays on ' + rtu.name">
-                <div class="mb2 xs12" v-for="dev in relays(rtu)" :key="dev.id">
-                    <RelaySwitch :device="dev" />
-                </div>
-            </w-card>
+        <div class="pa2 xl8 lg8 md12 sm12 xs12">
+            <RTUControlPanel @deviceEnacted="$emit('deviceEnacted', $event)" :rtu="rtu" />
         </div>
 
-        <div class="pa2 xl4 lg5 md6 sm12 xs12">
-            <w-card class="grow" title-class="blue-light5--bg title1" :title="'Thermometers on ' + rtu.name">
-                <div class="mb2 xs12" v-for="dev in thermometers(rtu)" :key="dev.id">
-                    <ThermometerControl :thermo="dev" />
-                </div>
-            </w-card>
-        </div>
 
     </w-flex>
 
@@ -36,12 +24,11 @@
 
 <script>
 import RTUDisplay from "@/components/RTUDisplay.vue";
-import RelaySwitch from "@/components/RelaySwitch.vue";
-import ThermometerControl from "@/components/ThermometerControl.vue";
+import RTUControlPanel from "@/components/RTUControlPanel.vue";
 
 export default {
     name: "DashboardComponent",
-    components: { RTUDisplay, RelaySwitch, ThermometerControl },
+    components: { RTUDisplay, RTUControlPanel },
     data() {
         return {}
     },
@@ -53,25 +40,6 @@ export default {
         addresses() {
             return this.$root.bcs.socket_man.RTU_addresses;
         },
-
-        relays(rtu) {
-            return rtu.devices.filter(dev => this.isRelay(dev));
-        },
-
-        thermometers(rtu) {
-            return rtu.devices.filter(dev => this.isThermometer(dev));
-        },
-
-        isRelay(dev) {
-            let relay_types = ["STR1", "Waveshare", "WaveshareV2"];
-            return relay_types.indexOf(dev.conn.controller) != -1;
-        },
-
-        isThermometer(dev) {
-            let thermo_types = ["CN7500"];
-            return thermo_types.indexOf(dev.conn.controller) != -1;
-        },
-
     }
 }
 

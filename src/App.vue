@@ -18,9 +18,10 @@
                 <w-divider class="my6"></w-divider>
 
                 <ToolbarItem linkto="/" icon="fa fa-sitemap">Dashboard</ToolbarItem>
+                <ToolbarItem linkto="/scenes" icon="fa fa-code-fork">Scenes</ToolbarItem>
             </w-toolbar>
 
-            <router-view />
+            <router-view @deviceEnacted="enactDevice($event)" />
 
 
         </w-card>
@@ -62,6 +63,7 @@
 import ToolbarItem from '@/components/ToolbarItem.vue';
 import BCS from "@/bcs/bcs.js";
 import moment from "moment";
+import db from "@/db.js";
 
 export default {
     name: "AppComponent",
@@ -110,6 +112,13 @@ export default {
             let device = this.findDevice(id);
             func(device);
         },
+
+        enactDevice(event) {
+            let device = this.findDevice(event.id);
+            device.state = event.new_state;
+            console.log("Just changed device " + device.id + " to state", device.state);
+            this.bcs.enactDevice(device.id);
+        }
     },
 
     async created() {
@@ -121,6 +130,7 @@ export default {
         // Setting the page title here because I can't figure out the right way to change it?
         document.title = "BCS Dashboard";
         window.app = this;
+        window.db = db;
     }
 }
 </script>

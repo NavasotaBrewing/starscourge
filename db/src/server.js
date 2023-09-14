@@ -10,45 +10,39 @@ app.use(bodyParser.json())
 
 // For ease of this tutorial, we are going to use SQLite to limit dependencies
 let database = new Sequelize({
-  dialect: 'sqlite',
-  storage: './brewkit.sqlite',
-  operatorsAliases: Sequelize.Op,
+    dialect: 'sqlite',
+    storage: './brewkit.sqlite',
+    operatorsAliases: Sequelize.Op,
 })
 
-// Define our Post model
+// Define our scene model
 // id, createdAt, and updatedAt are added by sequelize automatically
-let Model = database.define('model', {
-  name: Sequelize.STRING,
-  description: Sequelize.STRING,
-  // Just a string, not a DATE or anything fancy
-  date: Sequelize.STRING,
-  mode: Sequelize.STRING,
-  masterAddr: Sequelize.STRING,
-  slackChannel: Sequelize.STRING,
-  slackWebhook: Sequelize.STRING,
-  RTUs: Sequelize.JSON
+let Scene = database.define('scene', {
+    name: Sequelize.STRING,
+    description: Sequelize.STRING,
+    rtus: Sequelize.JSON,
 }, {
-  // I'm not sure i need this but i'm too lazy to check
-  timestamps: false
+    // I'm not sure i need this but i'm too lazy to check
+    timestamps: false
 });
 
 // Initialize epilogue
 epilogue.initialize({
-  app: app,
-  sequelize: database
+    app: app,
+    sequelize: database
 });
 
-// Create the dynamic REST resource for our Model model
+// Create the dynamic REST resource for our Scene model
 let userResource = epilogue.resource({
-  model: Model,
-  endpoints: ['/model', '/model/:id']
+    model: Scene,
+    endpoints: ['/scenes', '/scene/:id']
 });
 
 // Resets the database if true and launches the express app on :8081
 database
-  .sync({ force: false })
-  .then(() => {
-    app.listen(8081, () => {
-      console.log('listening to port localhost:8081')
-    })
-  });
+    .sync({ force: true })
+    .then(() => {
+        app.listen(8081, () => {
+            console.log('listening to port localhost:8081')
+        })
+    });

@@ -22,21 +22,20 @@ export default {
         })
     },
 
-    // Models
-    getModels() {
-        return this.execute('get', '/model');
-    },
-    getModel(id) {
-        return this.execute('get', `/model/${id}`);
-    },
-    createModel(data) {
-        return this.execute('post', '/model', data);
-    },
-    updateModel(id, data) {
-        return this.execute('put', `/model/${id}`, data);
-    },
-    deleteModel(id) {
-        return this.execute('delete', `/model/${id}`);
-    },
 
+    getScenes() {
+        return this.execute('get', '/scenes')
+    },
+    getScene(id) {
+        return this.execute('get', `/scene/${id}`);
+    },
+    createScene(data) {
+        return this.execute('post', '/scenes', data);
+    },
+    updateScene(id, data) {
+        return this.execute('put', `/scene/${id}`, data);
+    },
+    deleteScene(id) {
+        return this.execute('delete', `/scene/${id}`);
+    },
 }

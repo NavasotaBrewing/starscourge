@@ -79,16 +79,20 @@
 <script>
 export default {
     name: "RelaySwitch",
-    props: ["device", "hideLabel", "customLabel"],
+    props: ["device", "hideLabel", "customLabel", "selfContained"],
     methods: {
         setNewState(newState) {
             if (this.$root.isLocked()) {
                 return;
             }
-            // Manually update the state on the web interface
-            this.$root.mapDevice(this.device.id, (dev) => dev.state.relay_state = newState );
-            // Then actually send the enact event so the real device updates
-            this.$root.bcs.enactDevice(this.device.id);
+
+            // Bubble up an event. This will eventually make it to the top level App
+            this.$emit('deviceEnacted', {
+                id: this.device.id,
+                new_state: {
+                    relay_state: newState
+                }
+            });
         },
 
         isOn() {
