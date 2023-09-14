@@ -12,6 +12,10 @@
                     </w-list>
                 </w-flex>
                 
+                <w-flex class="mt5">
+                    <w-input v-model="newSceneName" bg-color="deep-purple-light5">New Scene Name</w-input>
+                    <w-button class="mx2 mt3 flex justify-end" bg-color="deep-purple-light5" @click="newScene" lg>New</w-button>
+                </w-flex>
                 <template #actions>
                     <div class="spacer"></div>
                     <w-button class="mx2" bg-color="deep-purple-light5" @click="enactScene" lg>Enact</w-button>
@@ -40,6 +44,7 @@ export default {
             scenes: [],
             currentScene: {},
             selectedSceneID: null,
+            newSceneName: ''
         }
     },
     methods: {
@@ -64,8 +69,29 @@ export default {
         },
 
         enactScene() {
+            if (this.currentScene.name == null) {
+                return;
+            }
+
+            this.$root.$waveui.notify('Enacting scene...');
             this.currentScene.rtus.forEach(rtu => {
                 this.$root.bcs.enactRTU(rtu);
+            })
+        },
+
+        newScene() {
+            if (this.newSceneName == "") {
+                this.$root.$waveui.notify("Scene needs a name", 'error');
+                return;
+            }
+
+            db.createScene({
+                name: this.newSceneName,
+                description: '',
+                rtus: this.$root.allRTUs()
+            }).then(scene => {
+                this.newSceneName = "";
+                this.scenes.push(scene);
             })
         }
     },
