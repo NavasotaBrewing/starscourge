@@ -54,6 +54,7 @@ class SocketManager {
     }
 
     sendEventTo(event, addr) {
+        console.log(event);
         let socket = this.sockets[addr];
         socket.send(event.toString());
     }

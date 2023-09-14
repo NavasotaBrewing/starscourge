@@ -116,7 +116,6 @@ export default {
         enactDevice(event) {
             let device = this.findDevice(event.id);
             device.state = event.new_state;
-            console.log("Just changed device " + device.id + " to state", device.state);
             this.bcs.enactDevice(device.id);
         }
     },

@@ -1,14 +1,24 @@
 
 class Event {
-    constructor(event_type, devices) {
+    constructor(event_type) {
         this.event_type = event_type;
+        this.devices = []
+        this.RTU = null
+    }
+
+    setDevices(devices) {
         this.devices = Array.isArray(devices) ? devices : [devices];
+    }
+
+    setRTU(rtu) {
+        this.RTU = rtu;
     }
 
     toString() {
         return JSON.stringify({
             event_type: this.event_type,
-            devices: this.devices
+            devices: this.devices,
+            RTU: this.RTU
         })
     }
 }

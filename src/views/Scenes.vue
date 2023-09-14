@@ -5,15 +5,22 @@
                 <w-flex>
                     <w-list
                         :item-class="'title3'"
-                        v-model="selectedScene"
+                        v-model="selectedSceneID"
                         :items="sceneNamesAndIds()"
                         color="deep-purple"
                         class="mt2 grow">
                     </w-list>
                 </w-flex>
+                
+                <template #actions>
+                    <div class="spacer"></div>
+                    <w-button class="mx2" bg-color="deep-purple-light5" @click="enactScene" lg>Enact</w-button>
+                    <w-button class="mx2" bg-color="success-light3" @click="saveScene" lg>Save</w-button>
+                </template>
             </w-card>
         </div>
         <div class="lg9">
+            <RTUControlPanel v-for="rtu in currentScene.rtus" :key="rtu.id" :rtu="rtu" @deviceEnacted="updateSceneRTUDeviceState($event, rtu.id)" />
         </div>
     </w-flex>
 </template>
@@ -23,14 +30,16 @@
 
 <script>
 import db from "@/db.js";
+import RTUControlPanel from "@/components/RTUControlPanel.vue";
 
 export default {
     name: 'ScenesComponent',
-    components: { },
+    components: { RTUControlPanel },
     data() {
         return {
             scenes: [],
-            selectedScene: null,
+            currentScene: {},
+            selectedSceneID: null,
         }
     },
     methods: {
@@ -41,6 +50,24 @@ export default {
             });
             return scenes;
         },
+
+        updateSceneRTUDeviceState(event, rtu_id) {
+            let rtu = this.currentScene.rtus.find(rtu => rtu.id == rtu_id);
+            let device = rtu.devices.find(device => device.id == event.id);
+            device.state = event.new_state;
+        },
+
+        saveScene() {
+            db.updateScene(this.currentScene.id, this.currentScene).then(() => {
+                this.$root.$waveui.notify('Scene saved', 'success');
+            });
+        },
+
+        enactScene() {
+            this.currentScene.rtus.forEach(rtu => {
+                this.$root.bcs.enactRTU(rtu);
+            })
+        }
     },
     mounted() {
         db.getScenes().then((resp) => {
@@ -48,6 +75,15 @@ export default {
         });
 
         window.scenes_app = this;
+    },
+    watch: {
+        selectedSceneID: function() {
+            if (!this.selectedSceneID) {
+                this.currentScene = {};
+                return;
+            }
+            this.currentScene = this.scenes.find(scene => scene.id == this.selectedSceneID);
+        }
     }
 }
 </script>

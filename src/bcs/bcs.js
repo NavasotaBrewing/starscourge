@@ -112,7 +112,8 @@ class BCS {
         this.app.RTUs.forEach((rtu) => {
             let found_dev = rtu.devices.find((dev) => dev.id == deviceId);
             if (found_dev != null) {
-                let event = new Event(eventType, found_dev);
+                let event = new Event(eventType);
+                event.setDevices([found_dev]);
                 this.socket_man.sendEventTo(event, rtu.ip_addr);
             } else {
                 console.log("Couldn't find device with id: ", deviceId);
@@ -129,8 +130,14 @@ class BCS {
     }
 
     resetRTUToDefaultState(rtu_ip) {
-        let event = new Event("RTUReset", []);
+        let event = new Event("RTUReset");
         this.socket_man.sendEventTo(event, rtu_ip);
+    }
+
+    enactRTU(rtu) {
+        let event = new Event("RTUEnact");
+        event.setRTU(rtu);
+        this.socket_man.sendEventTo(event, rtu.ip_addr);
     }
 }
 
