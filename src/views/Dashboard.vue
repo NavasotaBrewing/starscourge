@@ -9,7 +9,6 @@
             <RTUControlPanel @deviceEnacted="$emit('deviceEnacted', $event)" :rtu="rtu" />
         </div>
 
-
     </w-flex>
 
     <div v-if="RTUs().length == 0">
